@@ -21,3 +21,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/admin/user', 'Admin\UserController');
 Route::resource('/admin/project', 'Admin\ProjectController');
+
+Route::resource('/user/workrecord', 'User\WorkRecordController');
