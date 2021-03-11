@@ -18,42 +18,49 @@
                   登録
                   @endif
                   </h3>
-            </div>
-            <div class="card-body">
-              {{ Form::model($user, $formOptions) }}
-                  <div class="form-group">
-                      <label for="name">ユーザー名</label>
-                      {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name' ]) }}
-                      @error('name')
-                          <p class="text-danger">{{ $message }}</p>
-                      @enderror
-                  </div>
-                  <div class="form-group">
-                      <label for="email">メールアドレス</label>
-                      {{ Form::text('email', null, ['class' => 'form-control', 'id' => 'email' ]) }}
-                      @error('email')
-                          <p class="text-danger">{{ $message }}</p>
-                      @enderror
-                  </div>
-                  <div class="form-group">
-                      <label for="password">パスワード</label>
-                      {{ Form::password('password', ['class' => 'form-control', 'id' => 'password']) }}
-                      @error('password')
-                          <p class="text-danger">{{ $message }}</p>
-                      @enderror
-                  </div>
-              </div>
+                </div>
+                <div class="card-body">
+                {{ Form::model($user, $formOptions) }}
+                    <div class="form-group">
+                        <label for="name">ユーザー名</label>
+                        {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name' ]) }}
+                        @error('name')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="email">メールアドレス</label>
+                        {{ Form::text('email', null, ['class' => 'form-control', 'id' => 'email' ]) }}
+                        @error('email')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="password">パスワード</label>
+                        {{ Form::password('password', ['class' => 'form-control', 'id' => 'password']) }}
+                        @error('password')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
                 <div class="card-footer">
-                  <div class="btn-group" role="group">
-                      {{ Html::link(route('user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
-                      {{ Form::submit('保存', ['class' => 'btn btn-primary mr-2']) }}
-                      @isset($user->id)
-                      {{ Form::button('削除', ['class' => 'btn btn-secondary', 'data-toggle' => 'modal', 'data-target' => '#deleteModal']) }}
-                      @endisset
-                  </div>
+                    <div class="btn-group" role="group">
+                        {{ Html::link(route('user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
+                        {{ Form::submit('保存', ['class' => 'btn btn-primary mr-2']) }}
+                        @isset($user->id)
+                            {{ Form::button('削除', ['class' => 'btn btn-secondary', 'data-toggle' => 'modal', 'data-target' => '#deleteModal']) }}
+                        @endisset
+                    </div>
                 </div>
                 {{ Form::close() }}
-              </div>
+            </div>
+            @isset($user->id)
+                @include('layouts.deleteModal', ['id' => $user->id, 'url' => route('user.destroy', [$user->id])])
+            @endisset
         </div>
     </div>
+@stop
+
+@section('js')
+@stack('deleteModalJs')
 @stop
