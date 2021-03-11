@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreUserReuest;
+use App\Http\Requests\Admin\UpdateUserReuest;
 use App\Models\User;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -29,18 +33,33 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $user = new User();
+        return view('admin.user.form', [
+            'user' => $user,
+            'formOptions' => [
+                'route' => ['user.store',],
+                'method' => 'post',
+            ],
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Admin\StoreUserReuest;  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserReuest $request)
     {
-        //
+        $data = $request->all();
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return redirect(route('user.index'));
+        
     }
 
     /**
@@ -57,24 +76,39 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('admin.user.form', [
+            'user' => $user,
+            'formOptions' => [
+                'route' => ['user.update', [$user->id]],
+                'method' => 'put',
+            ],
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\Admin\UpdateUserReuest;  $request
+     * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserReuest $request, User $user)
     {
-        //
+        $data = $request->all();
+        $user->fill([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'] !== null? Hash::make($data['password']):$user->password,
+        ]);
+
+        $user->save();
+        return redirect(route('user.index'));
+
     }
 
     /**
