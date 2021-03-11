@@ -9,6 +9,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @include('layouts.alert')
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title mb-0 mt-2">一覧</h3>

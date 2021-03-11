@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserReuest;
 use App\Http\Requests\Admin\UpdateUserReuest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Utils\Consts\ExecResult;
+use Exception;
 
 use Illuminate\Support\Facades\Hash;
 
@@ -20,7 +21,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::orderBy('id', 'desc')->paginate(20);
-        
+
         return view('admin.user.index', [
             'users' => $users,
         ]);
@@ -52,14 +53,21 @@ class UserController extends Controller
     public function store(StoreUserReuest $request)
     {
         $data = $request->all();
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $status = ExecResult::FAILURE;
+        try {
+            User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+            $status = ExecResult::SUCCESS;
+            $message = '登録が完了しました';
+        } catch (Exception $e) {
+            $status = ExecResult::FAILURE;
+            $message = $e->getMessage();
+        }
 
-        return redirect(route('user.index'));
-        
+        return redirect(route('user.index'))->with($status, $message);
     }
 
     /**
@@ -101,16 +109,23 @@ class UserController extends Controller
      */
     public function update(UpdateUserReuest $request, User $user)
     {
+        $status = ExecResult::FAILURE;
         $data = $request->all();
         $user->fill([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $data['password'] !== null? Hash::make($data['password']):$user->password,
+            'password' => $data['password'] !== null ? Hash::make($data['password']) : $user->password,
         ]);
 
-        $user->save();
-        return redirect(route('user.index'));
-
+        try {
+            $user->save();
+            $status = ExecResult::SUCCESS;
+            $message = '更新しました';
+        } catch (Exception $e) {
+            $status = ExecResult::FAILURE;
+            $message = $e->getMessage();
+        }
+        return redirect(route('user.index'))->with($status, $message);
     }
 
     /**
@@ -121,7 +136,15 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
-        return redirect(route('user.index'));
+        $status = ExecResult::FAILURE;
+        try {
+            $user->delete();
+            $status = ExecResult::SUCCESS;
+            $message = '削除しました';
+        } catch (Exception $e) {
+            $status = ExecResult::FAILURE;
+            $message = $e->getMessage();
+        }
+        return redirect(route('user.index'))->with($status, $message);
     }
 }
