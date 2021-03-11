@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreUserReuest;
-use App\Http\Requests\Admin\UpdateUserReuest;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use App\Utils\Consts\ExecResult;
 use Exception;
@@ -47,10 +47,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\Admin\StoreUserReuest;  $request
+     * @param  App\Http\Requests\Admin\StoreUserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUserReuest $request)
+    public function store(StoreUserRequest $request)
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
@@ -103,11 +103,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\Admin\UpdateUserReuest;  $request
+     * @param  App\Http\Requests\Admin\UpdateUserRequest  $request
      * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserReuest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $status = ExecResult::FAILURE;
         $data = $request->all();
