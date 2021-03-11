@@ -29,6 +29,7 @@
                             <td>{{ $user->email}}</td>
                             <td>
                                 {{ Html::link(route('user.edit', [$user->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('user.show', [$user->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach
