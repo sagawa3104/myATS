@@ -17,6 +17,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+//認証チェックは全機能で統一して行う
 Route::middleware('auth')->group(function () {
 
     //ログイン後ホーム
