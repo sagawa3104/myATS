@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
+use App\Models\User;
 use App\Models\WorkRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,7 @@ class WorkRecordController extends Controller
         $workrecords = WorkRecord::where('user_id', Auth::user()->id)->orderBy('workday', 'desc')->paginate(20);
 
         return view('user.workrecord.index', [
+            'user' => Auth::user(),
             'workrecords' => $workrecords,
         ]);
     }
@@ -29,9 +32,22 @@ class WorkRecordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, User $user)
     {
         //
+        $data = $request->all();
+        $workrecord = new WorkRecord();
+        $porjects = Project::selectList();
+        return view('user.workrecord.form', [
+            'user' => $user,
+            'workrecord' => $workrecord,
+            'projects' => $porjects,
+            'workday' => $data['workday'],
+            'formOptions' => [
+                'route' => ['user.workrecord.store', [$user->id,]],
+                'method' => 'post',
+            ],
+        ]);
     }
 
     /**

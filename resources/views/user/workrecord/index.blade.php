@@ -14,8 +14,13 @@
                 <div class="card-header">
                     <h3 class="card-title mb-0 mt-2">一覧</h3>
                     <div class="text-right">
-                        {{ Form::date('workday', null, ['class' => 'mx-2']) }}
-                        {{ Html::link(route('project.create'), '登録', ['class' => 'btn btn-primary float-right']) }}
+                        {{ Form::open([
+                            'url' => route('user.workrecord.create', $user->id),
+                            'method' => 'get',
+                        ])}}
+                            {{ Form::date('workday', null, ['class' => 'mx-2 mt-1']) }}
+                            {{ Form::submit('登録', ['class' => 'btn btn-primary mb-3']) }}
+                        {{ Form::close() }}
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -32,8 +37,8 @@
                             <td>{{ $workrecord->name}}</td>
                             <td>{{ $workrecord->code}}</td>
                             <td>
-                                {{ Html::link(route('workrecord.edit', [$workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
-                                {{ Html::link(route('workrecord.show', [$workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('user.workrecord.edit', [$workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('user.workrecord.show', [$workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach
