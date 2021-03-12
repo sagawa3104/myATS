@@ -31,6 +31,6 @@ Route::middleware('auth')->group(function () {
     });
 
     //一般機能
-    Route::prefix('user')->namespace('User')->name('user')->group(function () {
+    Route::namespace('User')->name('user')->group(function () {
     });
 });
