@@ -48,7 +48,7 @@
                 {{ Form::close() }}
             </div>
             @isset($project->id)
-                @include('layouts.deleteModal', ['id' => $project->id, 'url' => route('project.destroy', [$project->id])])
+                @include('layouts.deleteModal', ['id' => $project->id, 'url' => route('admin.project.destroy', [$project->id])])
             @endisset
         </div>
     </div>

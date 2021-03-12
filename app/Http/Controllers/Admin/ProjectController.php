@@ -37,7 +37,7 @@ class ProjectController extends Controller
         return view('admin.project.form', [
             'project' => $project,
             'formOptions' => [
-                'route' => ['project.store',],
+                'route' => ['admin.project.store',],
                 'method' => 'post',
             ],
         ]);
@@ -65,7 +65,7 @@ class ProjectController extends Controller
             $message = $e->getMessage();
         }
 
-        return redirect(route('project.index'))->with($status, $message);
+        return redirect(route('admin.project.index'))->with($status, $message);
     }
 
     /**
@@ -92,7 +92,7 @@ class ProjectController extends Controller
         return view('admin.project.form', [
             'project' => $project,
             'formOptions' => [
-                'route' => ['project.update', [$project->id]],
+                'route' => ['admin.project.update', [$project->id]],
                 'method' => 'put',
             ],
         ]);
@@ -122,7 +122,7 @@ class ProjectController extends Controller
             $status = ExecResult::FAILURE;
             $message = $e->getMessage();
         }
-        return redirect(route('project.index'))->with($status, $message);
+        return redirect(route('admin.project.index'))->with($status, $message);
     }
 
     /**
@@ -142,6 +142,6 @@ class ProjectController extends Controller
             $status = ExecResult::FAILURE;
             $message = $e->getMessage();
         }
-        return redirect(route('project.index'))->with($status, $message);
+        return redirect(route('admin.project.index'))->with($status, $message);
     }
 }

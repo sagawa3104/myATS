@@ -45,7 +45,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">
-                        {{ Html::link(route('user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
+                        {{ Html::link(route('admin.user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
                         {{ Form::submit('保存', ['class' => 'btn btn-primary mr-2']) }}
                         @isset($user->id)
                             {{ Form::button('削除', ['class' => 'btn btn-secondary', 'data-toggle' => 'modal', 'data-target' => '#deleteModal']) }}
@@ -55,7 +55,7 @@
                 {{ Form::close() }}
             </div>
             @isset($user->id)
-                @include('layouts.deleteModal', ['id' => $user->id, 'url' => route('user.destroy', [$user->id])])
+                @include('layouts.deleteModal', ['id' => $user->id, 'url' => route('admin.user.destroy', [$user->id])])
             @endisset
         </div>
     </div>

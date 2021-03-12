@@ -28,7 +28,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">
-                        {{ Html::link(route('project.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
+                        {{ Html::link(route('admin.project.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
                     </div>
                 </div>
                 {{ Form::close() }}
