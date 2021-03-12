@@ -38,7 +38,7 @@ class UserController extends Controller
         return view('admin.user.form', [
             'user' => $user,
             'formOptions' => [
-                'route' => ['user.store',],
+                'route' => ['admin.user.store',],
                 'method' => 'post',
             ],
         ]);
@@ -67,7 +67,7 @@ class UserController extends Controller
             $message = $e->getMessage();
         }
 
-        return redirect(route('user.index'))->with($status, $message);
+        return redirect(route('admin.user.index'))->with($status, $message);
     }
 
     /**
@@ -94,7 +94,7 @@ class UserController extends Controller
         return view('admin.user.form', [
             'user' => $user,
             'formOptions' => [
-                'route' => ['user.update', [$user->id]],
+                'route' => ['admin.user.update', [$user->id]],
                 'method' => 'put',
             ],
         ]);
@@ -125,7 +125,7 @@ class UserController extends Controller
             $status = ExecResult::FAILURE;
             $message = $e->getMessage();
         }
-        return redirect(route('user.index'))->with($status, $message);
+        return redirect(route('admin.user.index'))->with($status, $message);
     }
 
     /**
@@ -145,6 +145,6 @@ class UserController extends Controller
             $status = ExecResult::FAILURE;
             $message = $e->getMessage();
         }
-        return redirect(route('user.index'))->with($status, $message);
+        return redirect(route('admin.user.index'))->with($status, $message);
     }
 }

@@ -17,9 +17,20 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('/admin/user', 'Admin\UserController');
-Route::resource('/admin/project', 'Admin\ProjectController');
+//認証チェックは全機能で統一して行う
+Route::middleware('auth')->group(function () {
 
-Route::resource('/user/workrecord', 'User\WorkRecordController');
+    //ログイン後ホーム
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    //管理機能
+    Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function () {
+        Route::resource('/user', 'UserController');
+        Route::resource('/project', 'ProjectController');
+    });
+
+    //一般機能
+    Route::namespace('User')->name('user.')->group(function () {
+    });
+});
