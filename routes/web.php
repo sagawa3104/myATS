@@ -17,7 +17,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(function () {
 
-Route::resource('/admin/user', 'Admin\UserController');
-Route::resource('/admin/project', 'Admin\ProjectController');
+    //ログイン後ホーム
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    //管理機能
+    Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function () {
+        Route::resource('/user', 'UserController');
+        Route::resource('/project', 'ProjectController');
+    });
+
+    //一般機能
+    Route::prefix('user')->namespace('User')->name('user')->group(function () {
+    });
+});
