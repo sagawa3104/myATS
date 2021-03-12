@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title mb-0 mt-2">一覧</h3>
-                    <div class="text-right">{{ Html::link(route('user.create'), '登録', ['class' => 'btn btn-primary float-right']) }}</div>
+                    <div class="text-right">{{ Html::link(route('admin.user.create'), '登録', ['class' => 'btn btn-primary float-right']) }}</div>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover">
@@ -29,8 +29,8 @@
                             <td>{{ $user->name}}</td>
                             <td>{{ $user->email}}</td>
                             <td>
-                                {{ Html::link(route('user.edit', [$user->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
-                                {{ Html::link(route('user.show', [$user->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('admin.user.edit', [$user->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('admin.user.show', [$user->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach

@@ -32,7 +32,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">
-                        {{ Html::link(route('user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
+                        {{ Html::link(route('admin.user.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
                     </div>
                 </div>
                 {{ Form::close() }}
