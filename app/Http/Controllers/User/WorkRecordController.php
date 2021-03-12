@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreWorkRecordRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
@@ -56,9 +57,10 @@ class WorkRecordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreWorkRecordRequest $request)
     {
         //
+        dd($request->all());
     }
 
     /**
