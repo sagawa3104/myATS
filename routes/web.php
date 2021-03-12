@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::group(function () {
+Route::middleware('auth')->group(function () {
 
     //ログイン後ホーム
     Route::get('/home', 'HomeController@index')->name('home');
