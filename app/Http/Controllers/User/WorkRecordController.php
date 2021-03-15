@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
+use App\Utils\Consts\StrtotimeConverter;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -140,9 +141,9 @@ class WorkRecordController extends Controller
 
     private function setWorkRecordDetails($data)
     {
-
         $workRecordDetails = [];
         for ($i = 0; $i < count($data['project_id']); $i++) {
+            $test = StrtotimeConverter::strHourToIntMinute($data['work_time'][$i]);
             $workRecordDetail = new WorkRecordDetail([
                 'project_id' => $data['project_id'][$i],
                 'work_time' => $data['work_time'][$i],
