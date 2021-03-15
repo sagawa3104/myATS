@@ -6,9 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreWorkRecordRequest extends FormRequest
 {
-    private const SECONDSFORMINUTE =60;
+    private const SECONDSFORMINUTE = 60;
     private const NINEHOURSTOMINUTES = 540;
     private const EIGHTHOURSTOMINUTES = 480;
+    private const BREAKTIME_L = 60;
+    private const BREAKTIME_S = 45;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,37 +29,34 @@ class StoreWorkRecordRequest extends FormRequest
      */
     public function withValidator($validator)
     {
+        if ($validator->fails()) return;
+
         $validator->after(function ($validator) {
-            $attended_at = strtotime($validator->getData('attended_at'));
-            $left_at = strtotime($validator->getData('left_at'));
-            $attending_minutes = ($left_at - $attended_at) / self::SECONDSFORMINUTE ;
-            $break_time = $attending_minutes < self::NINEHOURSTOMINUTES ? 45: 60;
-            $working_time = $attending_minutes - $break_time;
-            $over_time = $working_time - self::EIGHTHOURSTOMINUTES;
-            
-            $projects = $validator->getData('project_id');
-            $work_times = $validator->getData('work_time');
-            $contents = $validator->getData('content');
+            $data = $this->ComplementHeader($validator->getData());
 
+            $projects = $data['project_id'];
+            $work_times = $data['work_time'];
+            $contents = $data['content'];
+
+            $workday = strtotime($data['workday']);
             $detail_work_time = 0;
-            for($i = 0; $i < count($projects; $i++){
-                if(is_null($projects[$i])) continue;
+            for ($i = 0; $i < count($projects); $i++) {
+                if (is_null($projects[$i])) continue;
 
-                if(is_null($work_times[$i])){
-                    $validator->errors()->add('work_time', '作業時間を入力してください');
+                if (is_null($work_times[$i])) {
+                    $validator->errors()->add('work_time.' . $i, '作業時間を入力してください');
                 }
 
-                if(is_null($contents[$i])){
-                    $validator->errors()->add('content', '作業内容を入力してください');
+                if (is_null($contents[$i])) {
+                    $validator->errors()->add('content.' . $i, '作業内容を入力してください');
                 }
 
-                $detail_work_time += strtotime($work_time[$i]) / self::SECONDSFORMINUTE;
+                $detail_work_time += (strtotime($work_times[$i]) - $workday) / self::SECONDSFORMINUTE;
             }
 
-            if($working_time <> $detail_work_time){
-                $validator->errors()->add('work_time', '作業内容を入力してください');
+            if ($data['working_time'] <> $detail_work_time) {
+                $validator->errors()->add('sum_work_time', '勤務時間と合計時間が一致しません');
             }
-
         });
     }
 
@@ -76,5 +75,32 @@ class StoreWorkRecordRequest extends FormRequest
             'work_time.*' => 'nullable|date_format:H:i',
             'content.*' => 'nullable|max:255',
         ];
+    }
+
+
+    private function calcAttendingTime($data)
+    {
+
+        $attended_at = strtotime($data['attended_at']);
+        $left_at = strtotime($data['left_at']);
+
+        return ($left_at - $attended_at) / self::SECONDSFORMINUTE;;
+    }
+
+    private function ComplementHeader($data)
+    {
+
+        $attending_time = $this->calcAttendingTime($data);
+        $break_time = $attending_time < self::NINEHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
+        $working_time = $attending_time - $break_time;
+        $over_time = $working_time - self::EIGHTHOURSTOMINUTES;
+
+        $this->merge([
+            'working_time' => $working_time,
+            'break_time' => $break_time,
+            'over_time' => $over_time,
+        ]);
+
+        return $this->validationData();
     }
 }
