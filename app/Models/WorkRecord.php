@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class WorkRecord extends Model
 {
     //
-    use SoftDeletes;
-
     protected $fillable = [
         'user_id',
         'workday',
@@ -19,4 +17,9 @@ class WorkRecord extends Model
         'break_time',
         'overtime',
     ];
+
+    public function workRecordDetails()
+    {
+        return $this->hasMany('App\Models\WorkRecordDetail');
+    }
 }

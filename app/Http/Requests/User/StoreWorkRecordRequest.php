@@ -93,12 +93,12 @@ class StoreWorkRecordRequest extends FormRequest
         $attending_time = $this->calcAttendingTime($data);
         $break_time = $attending_time < self::NINEHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
         $working_time = $attending_time - $break_time;
-        $over_time = $working_time - self::EIGHTHOURSTOMINUTES;
+        $overtime = $working_time - self::EIGHTHOURSTOMINUTES;
 
         $this->merge([
             'working_time' => $working_time,
             'break_time' => $break_time,
-            'over_time' => $over_time,
+            'overtime' => $overtime,
         ]);
 
         return $this->validationData();
