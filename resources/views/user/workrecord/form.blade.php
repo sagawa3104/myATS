@@ -52,16 +52,25 @@
                             <h4 class="card-title mb-0">明細</h4>
                         </div>
                         <div class="form-body">
-                            <table class="table table-hover">
-                                <tr>
-                                    <th>プロジェクト</th>
-                                    <th>稼働時間</th>
-                                    <th>作業内容</th>
-                                </tr>
-                                @for($i = 0; $i <10; $i++)
+                            <table class="table table-hover" id='detailTable'>
+                                <thead>
+                                    <tr>
+                                        <th>プロジェクト</th>
+                                        <th>
+                                            稼働時間
+                                            @error('sum_work_time')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </th>
+                                        <th>作業内容</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @empty(old('project_id'))
                                     <tr>
                                         <td>
-                                            {{ Form::select("project_id[]", $projects, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                            {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
                                         </td>
                                         <td>
                                             {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
@@ -69,9 +78,40 @@
                                         <td>
                                             {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
                                         </td>
+                                        <td>
+                                            {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
+                                        </td>
                                     </tr>
-                                @endfor
+                                    @else
+                                        @for ($i=0; $i< count(old('project_id')) ;$i++)
+                                            <tr>
+                                                <td>
+                                                    {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                    @error('project_id.'.$i)
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
+                                                <td>
+                                                    {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                    @error('work_time.'.$i)
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
+                                                <td>
+                                                    {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                    @error('content.'.$i)
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </td>
+                                                <td>
+                                                    {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
+                                                </td>
+                                            </tr>
+                                        @endfor
+                                    @endempty
+                                </tbody>
                             </table>
+                            {{ Form::button('明細追加', ['class' => 'btn btn-primary mx-1 my-1', 'id' => 'addDetail']) }}
                         </div>
                     </div>
 
@@ -95,5 +135,21 @@
 @stop
 
 @section('js')
+<script>
+    const addDetail = document.querySelector('#addDetail');
+    addDetail.addEventListener('click', function(){
+        $('#detailTable tbody tr:last-child').clone(true).appendTo('#detailTable tbody');
+
+        $("#detailTable tbody tr:last-child input").val("");
+    });
+
+    $(document).on('click', '#deleteRow', function(){
+        const rowCount = $('#detailTable tbody').children().length;
+        if(rowCount > 1){
+            $(this).parents().parents('tr').remove();
+        } 
+    })
+
+</script>
 @stack('deleteModalJs')
 @stop
