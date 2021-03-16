@@ -38,7 +38,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">
-                        {{ Html::link(route('project.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
+                        {{ Html::link(route('admin.project.index'), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
                         {{ Form::submit('保存', ['class' => 'btn btn-primary mr-2']) }}
                         @isset($project->id)
                             {{ Form::button('削除', ['class' => 'btn btn-secondary', 'data-toggle' => 'modal', 'data-target' => '#deleteModal']) }}
