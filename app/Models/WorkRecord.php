@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\StrtotimeConverter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,5 +22,10 @@ class WorkRecord extends Model
     public function workRecordDetails()
     {
         return $this->hasMany('App\Models\WorkRecordDetail');
+    }
+
+    public function intWorkingTimeToStrHour()
+    {
+        return StrtotimeConverter::intMinuteToStrHour($this->working_time);
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
-use App\Utils\Consts\StrtotimeConverter;
+use App\Utils\StrtotimeConverter;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +90,7 @@ class WorkRecordController extends Controller
 
         DB::commit();
 
-        return redirect(route('user.workrecord.index'));
+        return redirect(route('user.workrecord.index', [$user->id]));
     }
 
     /**
@@ -141,15 +141,15 @@ class WorkRecordController extends Controller
 
     private function setWorkRecordDetails($data)
     {
-        $workRecordDetails = [];
+        $workRecordDetails = array();
         for ($i = 0; $i < count($data['project_id']); $i++) {
-            $test = StrtotimeConverter::strHourToIntMinute($data['work_time'][$i]);
+            if (is_null($data['project_id'][$i])) continue;
             $workRecordDetail = new WorkRecordDetail([
                 'project_id' => $data['project_id'][$i],
-                'work_time' => $data['work_time'][$i],
+                'work_time' => StrtotimeConverter::strHourToIntMinute($data['work_time'][$i]),
                 'content' => $data['content'][$i],
             ]);
-            $workRecordDetails += array($workRecordDetail);
+            array_push($workRecordDetails, $workRecordDetail);
         }
 
         return $workRecordDetails;

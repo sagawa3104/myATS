@@ -34,11 +34,11 @@
                     @foreach ($workrecords as $workrecord)
                         <tr>
                             <td>{{ $workrecord->id}}</td>
-                            <td>{{ $workrecord->name}}</td>
-                            <td>{{ $workrecord->code}}</td>
+                            <td>{{ $workrecord->workday}}</td>
+                            <td>{{ $workrecord->intWorkingTimeToStrHour() }}</td>
                             <td>
-                                {{ Html::link(route('user.workrecord.edit', [$workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
-                                {{ Html::link(route('user.workrecord.show', [$workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('user.workrecord.edit', [$user->id, $workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('user.workrecord.show', [$user->id, $workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach

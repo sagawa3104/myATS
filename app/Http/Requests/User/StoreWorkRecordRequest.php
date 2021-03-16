@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\User;
 
+use App\Utils\StrtotimeConverter;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreWorkRecordRequest extends FormRequest
 {
-    private const SECONDSFORMINUTE = 60;
     private const NINEHOURSTOMINUTES = 540;
     private const EIGHTHOURSTOMINUTES = 480;
     private const BREAKTIME_L = 60;
@@ -38,7 +38,6 @@ class StoreWorkRecordRequest extends FormRequest
             $work_times = $data['work_time'];
             $contents = $data['content'];
 
-            $workday = strtotime($data['workday']);
             $detail_work_time = 0;
             for ($i = 0; $i < count($projects); $i++) {
                 if (is_null($projects[$i])) continue;
@@ -51,7 +50,7 @@ class StoreWorkRecordRequest extends FormRequest
                     $validator->errors()->add('content.' . $i, '作業内容を入力してください');
                 }
 
-                $detail_work_time += (strtotime($work_times[$i]) - $workday) / self::SECONDSFORMINUTE;
+                $detail_work_time += StrtotimeConverter::strHourToIntMinute($work_times[$i]);
             }
 
             if ($data['working_time'] <> $detail_work_time) {
@@ -81,10 +80,10 @@ class StoreWorkRecordRequest extends FormRequest
     private function calcAttendingTime($data)
     {
 
-        $attended_at = strtotime($data['attended_at']);
-        $left_at = strtotime($data['left_at']);
+        $attended_at = StrtotimeConverter::strHourToIntMinute($data['attended_at']);
+        $left_at = StrtotimeConverter::strHourToIntMinute($data['left_at']);
 
-        return ($left_at - $attended_at) / self::SECONDSFORMINUTE;;
+        return $left_at - $attended_at;
     }
 
     private function ComplementHeader($data)
