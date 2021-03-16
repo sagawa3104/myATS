@@ -7,11 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class StrtotimeConverterTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
     public function testStrHourToIntMinute()
     {
         $hour = "08:00";
