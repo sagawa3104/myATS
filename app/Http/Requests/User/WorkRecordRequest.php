@@ -4,8 +4,9 @@ namespace App\Http\Requests\User;
 
 use App\Utils\StrtotimeConverter;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreWorkRecordRequest extends FormRequest
+class WorkRecordRequest extends FormRequest
 {
     private const NINEHOURSTOMINUTES = 540;
     private const EIGHTHOURSTOMINUTES = 480;
@@ -66,8 +67,10 @@ class StoreWorkRecordRequest extends FormRequest
      */
     public function rules()
     {
+        $unique = Rule::unique('work_records', 'workday');
+        $unique = isset($this->workrecord)? $unique->ignore($this->workrecord->id):$unique;
         return [
-            'workday' => 'required|date',
+            'workday' => ['required','date',$unique],
             'attended_at' => 'required|date_format:H:i|',
             'left_at' => 'required|date_format:H:i|after:attended_at',
             'project_id.*' => 'nullable|exists:projects,id',

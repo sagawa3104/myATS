@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\StoreWorkRecordRequest;
+use App\Http\Requests\User\WorkRecordRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
@@ -41,13 +41,14 @@ class WorkRecordController extends Controller
     {
         //
         $data = $request->all();
-        $workrecord = new WorkRecord();
+        $workrecord = new WorkRecord([
+            'workday' => $data['workday']
+        ]);
         $porjects = Project::selectList();
         return view('user.workrecord.form', [
             'user' => $user,
             'workrecord' => $workrecord,
             'projects' => $porjects,
-            'workday' => $data['workday'],
             'formOptions' => [
                 'route' => ['user.workrecord.store', [$user->id,]],
                 'method' => 'post',
@@ -61,7 +62,7 @@ class WorkRecordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreWorkRecordRequest $request, User $user)
+    public function store(WorkRecordRequest $request, User $user)
     {
         //
         $data = $request->all();
@@ -110,9 +111,19 @@ class WorkRecordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user, WorkRecord $workrecord)
     {
         //
+        $porjects = Project::selectList();
+        return view('user.workrecord.form',[
+            'user' => $user,
+            'workrecord' => $workrecord,
+            'projects' => $porjects,
+            'formOptions' => [
+                'route' => ['user.workrecord.update', [$user->id, $workrecord->id]],
+                'method' => 'put',
+            ],
+        ]);
     }
 
     /**
@@ -122,9 +133,10 @@ class WorkRecordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(WorkRecordRequest $request, User $user, WorkRecord $workrecord)
     {
         //
+        dd($workrecord);
     }
 
     /**

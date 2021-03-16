@@ -28,7 +28,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="workday">勤務日</label>
-                                {{ Form::date('workday', $workday, []) }}
+                                {{ Form::date('workday', null, []) }}
                                 @error('workday')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -67,48 +67,95 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @empty(old('project_id'))
-                                    <tr>
-                                        <td>
-                                            {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
-                                        </td>
-                                        <td>
-                                            {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
-                                        </td>
-                                        <td>
-                                            {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
-                                        </td>
-                                        <td>
-                                            {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
-                                        </td>
-                                    </tr>
+                                    @if(isset($workrecord->id))
+                                        @empty(old('project_id'))
+                                            @foreach($workrecord->workRecordDetails as $workRecordDetail)
+                                                <tr>
+                                                    <td>
+                                                        {{ Form::select('project_id[]', $projects, $workRecordDetail->project_id, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::time('work_time[]', $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::text('content[]', $workRecordDetail->content, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            @for ($i=0; $i< count(old('project_id')) ;$i++)
+                                                <tr>
+                                                    <td>
+                                                        {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                        @error('project_id.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                        @error('work_time.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                        @error('content.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
+                                                    </td>
+                                                </tr>
+                                            @endfor
+                                        @endempty
                                     @else
-                                        @for ($i=0; $i< count(old('project_id')) ;$i++)
+                                        @empty(old('project_id'))
                                             <tr>
                                                 <td>
                                                     {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
-                                                    @error('project_id.'.$i)
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                    @enderror
                                                 </td>
                                                 <td>
                                                     {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
-                                                    @error('work_time.'.$i)
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                    @enderror
                                                 </td>
                                                 <td>
                                                     {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
-                                                    @error('content.'.$i)
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                    @enderror
                                                 </td>
                                                 <td>
                                                     {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
                                                 </td>
                                             </tr>
-                                        @endfor
-                                    @endempty
+                                        @else
+                                            @for ($i=0; $i< count(old('project_id')) ;$i++)
+                                                <tr>
+                                                    <td>
+                                                        {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                        @error('project_id.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                        @error('work_time.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                        @error('content.'.$i)
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
+                                                    </td>
+                                                </tr>
+                                            @endfor
+                                        @endempty
+                                    @endif
                                 </tbody>
                             </table>
                             {{ Form::button('明細追加', ['class' => 'btn btn-primary mx-1 my-1', 'id' => 'addDetail']) }}
