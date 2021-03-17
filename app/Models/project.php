@@ -15,6 +15,10 @@ class Project extends Model
         'name',
     ];
 
+    public function workRecordDetails(){
+        return $this->hasMany('App\Models\WorkRecordDetail');
+    }
+
     public static function selectList()
     {
         $projects = Project::orderBy('id', 'desc')->get();
