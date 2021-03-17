@@ -136,7 +136,27 @@ class WorkRecordController extends Controller
     public function update(WorkRecordRequest $request, User $user, WorkRecord $workrecord)
     {
         //
-        dd($workrecord);
+        $data = $request->all();
+        $workrecord->fill($data);
+        $oldWorkRecordDetails = $workrecord->workRecordDetails();
+
+        $workRecordDetails = $this->setWorkRecordDetails($data);
+
+        DB::beginTransaction();
+        try {
+            $oldWorkRecordDetails->delete();
+            $workrecord->save();
+
+            $workrecord->workRecordDetails()->saveMany($workRecordDetails);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withInput();
+        }
+
+        DB::commit();
+
+        return redirect(route('user.workrecord.index', [$user->id]));
+
     }
 
     /**
