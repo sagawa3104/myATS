@@ -29,4 +29,8 @@ class Project extends Model
         }
         return $list;
     }
+
+    public function selectedItem(){
+        return array($this->id => $this->code . ":" . $this->name);
+    }
 }
