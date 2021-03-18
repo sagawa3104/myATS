@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreProjectRequest;
-use App\Http\Requests\Admin\UpdateProjectRequest;
+use App\Http\Requests\Admin\ProjectRequest;
 use App\Models\Project;
 use App\Utils\Consts\ExecResult;
 use Exception;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -49,7 +47,7 @@ class ProjectController extends Controller
      * @param  App\Http\Requests\Admin\StoreProjectRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProjectRequest $request)
+    public function store(ProjectRequest $request)
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
@@ -105,13 +103,13 @@ class ProjectController extends Controller
      * @param  App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(ProjectRequest $request, Project $project)
     {
         $status = ExecResult::FAILURE;
         $data = $request->all();
         $project->fill([
+            'code' => $data['code'],
             'name' => $data['name'],
-            'email' => $data['email'],
         ]);
 
         try {

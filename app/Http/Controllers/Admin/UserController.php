@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreUserRequest;
-use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
 use App\Utils\Consts\ExecResult;
 use Exception;
@@ -50,7 +49,7 @@ class UserController extends Controller
      * @param  App\Http\Requests\Admin\StoreUserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUserRequest $request)
+    public function store(UserRequest $request)
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
@@ -107,7 +106,7 @@ class UserController extends Controller
      * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
         $status = ExecResult::FAILURE;
         $data = $request->all();

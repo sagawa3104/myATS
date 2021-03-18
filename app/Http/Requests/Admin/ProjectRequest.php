@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class ProjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +24,11 @@ class StoreUserRequest extends FormRequest
      */
     public function rules()
     {
+        $unique = Rule::unique('projects', 'code');
+        $unique = isset($this->project)? $unique->ignore($this->project->id):$unique;
         return [
+            'code' => ['required','string','max:255',$unique],
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
         ];
     }
 }
