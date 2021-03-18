@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'my ATS ',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -226,8 +226,8 @@ return [
     'menu' => [
         [
             'text' => 'search',
-            'search' => true,
-            'topnav' => true,
+            'search' => false,
+            'topnav' => false,
         ],
         [
             'text' => 'blog',
@@ -241,17 +241,24 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
-        ['header' => 'account_settings'],
+        ['header' => '管理メニュー'],
         [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
+            'text' => 'ユーザー管理',
+            'url'  => 'admin/user',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'text' => 'プロジェクト管理',
+            'url'  => 'admin/project',
             'icon' => 'fas fa-fw fa-lock',
         ],
+        ['header' => 'ユーザーメニュー'],
+        [
+            'text' => '勤怠管理',
+            'preroute'  => 'user.workrecord.index',
+            'route'  => ['user.workrecord.index', ['user' => 1]],
+            'icon' => 'fas fa-fw fa-lock',
+        ],  
         [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',
@@ -322,12 +329,15 @@ return [
 
     'filters' => [
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
+        App\LaravelAdminLte\Menu\Filters\RouteFilter::class,    //HrefFilterの前に入れないとリンクが作成されない
+
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+
     ],
 
     /*
