@@ -4,8 +4,9 @@ namespace App\Http\Requests\User;
 
 use App\Utils\StrtotimeConverter;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreWorkRecordRequest extends FormRequest
+class WorkRecordRequest extends FormRequest
 {
     private const NINEHOURSTOMINUTES = 540;
     private const EIGHTHOURSTOMINUTES = 480;
@@ -32,12 +33,13 @@ class StoreWorkRecordRequest extends FormRequest
         if ($validator->fails()) return;
 
         $validator->after(function ($validator) {
-            $data = $this->ComplementHeader($validator->getData());
+            $data = $this->validationData();
 
             $projects = $data['project_id'];
             $work_times = $data['work_time'];
             $contents = $data['content'];
 
+            //作業合計時間を算定
             $detail_work_time = 0;
             for ($i = 0; $i < count($projects); $i++) {
                 if (is_null($projects[$i])) continue;
@@ -53,9 +55,22 @@ class StoreWorkRecordRequest extends FormRequest
                 $detail_work_time += StrtotimeConverter::strHourToIntMinute($work_times[$i]);
             }
 
-            if ($data['working_time'] <> $detail_work_time) {
-                $validator->errors()->add('sum_work_time', '勤務時間と合計時間が一致しません');
+            //作業合計時間に基づき、休憩時間、超過時間を算定
+            $break_time = $detail_work_time < self::NINEHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
+            $overtime = $detail_work_time - self::EIGHTHOURSTOMINUTES;
+
+            //出勤時刻・退勤時刻から算定した時間と作業合計時間の検証            
+            $attending_time = StrtotimeConverter::strHourToIntMinute($data['left_at']) - StrtotimeConverter::strHourToIntMinute($data['attended_at']);
+            if ($attending_time <> $detail_work_time + $break_time) {
+                $validator->errors()->add('sum_work_time', '勤務時間と作業合計時間が一致しません');
             }
+
+            //導出項目をリクエストに追加
+            $this->merge([
+                'working_time' => $detail_work_time,
+                'break_time' => $break_time,
+                'overtime' => $overtime,
+            ]);
         });
     }
 
@@ -66,8 +81,10 @@ class StoreWorkRecordRequest extends FormRequest
      */
     public function rules()
     {
+        $unique = Rule::unique('work_records', 'workday');
+        $unique = isset($this->workrecord)? $unique->ignore($this->workrecord->id):$unique;
         return [
-            'workday' => 'required|date',
+            'workday' => ['required','date',$unique],
             'attended_at' => 'required|date_format:H:i|',
             'left_at' => 'required|date_format:H:i|after:attended_at',
             'project_id.*' => 'nullable|exists:projects,id',
@@ -76,30 +93,4 @@ class StoreWorkRecordRequest extends FormRequest
         ];
     }
 
-
-    private function calcAttendingTime($data)
-    {
-
-        $attended_at = StrtotimeConverter::strHourToIntMinute($data['attended_at']);
-        $left_at = StrtotimeConverter::strHourToIntMinute($data['left_at']);
-
-        return $left_at - $attended_at;
-    }
-
-    private function ComplementHeader($data)
-    {
-
-        $attending_time = $this->calcAttendingTime($data);
-        $break_time = $attending_time < self::NINEHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
-        $working_time = $attending_time - $break_time;
-        $overtime = $working_time - self::EIGHTHOURSTOMINUTES;
-
-        $this->merge([
-            'working_time' => $working_time,
-            'break_time' => $break_time,
-            'overtime' => $overtime,
-        ]);
-
-        return $this->validationData();
-    }
 }

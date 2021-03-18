@@ -28,4 +28,12 @@ class WorkRecord extends Model
     {
         return StrtotimeConverter::intMinuteToStrHour($this->working_time);
     }
+    public function intBreakTimeToStrHour()
+    {
+        return StrtotimeConverter::intMinuteToStrHour($this->break_time);
+    }
+    public function intOverTimeToStrHour()
+    {
+        return StrtotimeConverter::intMinuteToStrHour($this->overtime);
+    }
 }
