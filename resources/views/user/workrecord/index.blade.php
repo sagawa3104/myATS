@@ -26,16 +26,18 @@
                 <div class="card-body p-0">
                     <table class="table table-hover">
                         <tr>
-                            <th class="text-nowrap">col1</th>
-                            <th class="text-nowrap">col2</th>
-                            <th class="text-nowrap">col3</th>
-                            <th class="text-nowrap">col4</th>
+                            <th class="text-nowrap">勤務日</th>
+                            <th class="text-nowrap">勤務時間</th>
+                            <th class="text-nowrap">休憩時間</th>
+                            <th class="text-nowrap">時間外労働時間</th>
+                            <th></th>
                         </tr>
                     @foreach ($workrecords as $workrecord)
                         <tr>
-                            <td>{{ $workrecord->id}}</td>
                             <td>{{ $workrecord->workday}}</td>
                             <td>{{ $workrecord->intWorkingTimeToStrHour() }}</td>
+                            <td>{{ $workrecord->intBreakTimeToStrHour() }}</td>
+                            <td>{{ $workrecord->intOverTimeToStrHour() }}</td>
                             <td>
                                 {{ Html::link(route('user.workrecord.edit', [$user->id, $workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
                                 {{ Html::link(route('user.workrecord.show', [$user->id, $workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}

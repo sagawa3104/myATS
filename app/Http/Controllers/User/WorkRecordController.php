@@ -42,7 +42,9 @@ class WorkRecordController extends Controller
         //
         $data = $request->all();
         $workrecord = new WorkRecord([
-            'workday' => $data['workday']
+            'workday' => $data['workday'],
+            'attended_at' => '10:00',
+            'left_at' => '19:00',
         ]);
         $porjects = Project::selectList();
         return view('user.workrecord.form', [
@@ -100,9 +102,14 @@ class WorkRecordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user, WorkRecord $workrecord)
     {
-        //
+        $porjects = Project::selectList();
+        return view('user.workrecord.show',[
+            'user' => $user,
+            'workrecord' => $workrecord,
+            'projects' => $porjects,
+        ]);
     }
 
     /**

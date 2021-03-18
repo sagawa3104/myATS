@@ -28,19 +28,19 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="workday">勤務日</label>
-                                {{ Form::date('workday', null, []) }}
+                                {{ Form::date('workday', null, ['class' => 'form-control', 'id' => 'workday']) }}
                                 @error('workday')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="attended_at">勤務開始時間</label>
-                                {{ Form::time('attended_at', '10:00') }}
+                                {{ Form::time('attended_at', null, ['class' => 'form-control', 'id' => 'workday']) }}
                                 @error('attended_at')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                                 <label for="left_at">勤務終了時間</label>
-                                {{ Form::time('left_at', '19:00') }}
+                                {{ Form::time('left_at', null, ['class' => 'form-control', 'id' => 'workday']) }}
                                 @error('left_at')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -167,9 +167,6 @@
                     <div class="btn-group" role="group">
                         {{ Html::link(route('user.workrecord.index', $user->id), '戻る', ['class' => 'btn btn-secondary mr-2']) }}
                         {{ Form::submit('保存', ['class' => 'btn btn-primary mr-2']) }}
-                        @isset($workrecord->id)
-                            {{ Form::button('削除', ['class' => 'btn btn-secondary', 'data-toggle' => 'modal', 'data-target' => '#deleteModal']) }}
-                        @endisset
                     </div>
                 </div>
                 {{ Form::close() }}
