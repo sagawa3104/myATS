@@ -241,15 +241,20 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
-        ['header' => '管理メニュー'],
+        [
+            'header' => '管理メニュー',
+            'can' => 'view-admin-menu',
+        ],
         [
             'text' => 'ユーザー管理',
             'url'  => 'admin/user',
+            'can' => 'view-admin-menu',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
             'text' => 'プロジェクト管理',
             'url'  => 'admin/project',
+            'can' => 'view-admin-menu',
             'icon' => 'fas fa-fw fa-lock',
         ],
         ['header' => 'ユーザーメニュー'],
