@@ -26,5 +26,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+        Gate::define('view-admin-menu', 'App\Gates\AdminMenuGate@showAdminMenu');
     }
 }
