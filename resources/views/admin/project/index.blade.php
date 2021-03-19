@@ -18,16 +18,16 @@
                 <div class="card-body p-0">
                     <table class="table table-hover">
                         <tr>
-                            <th class="text-nowrap">col1</th>
-                            <th class="text-nowrap">col2</th>
-                            <th class="text-nowrap">col3</th>
-                            <th class="text-nowrap">col4</th>
+                            <th class="text-nowrap">ID</th>
+                            <th class="text-nowrap">プロジェクトコード</th>
+                            <th class="text-nowrap">プロジェクト名</th>
+                            <th class="text-nowrap"></th>
                         </tr>
                     @foreach ($projects as $project)
                         <tr>
                             <td>{{ $project->id}}</td>
-                            <td>{{ $project->name}}</td>
                             <td>{{ $project->code}}</td>
+                            <td>{{ $project->name}}</td>
                             <td>
                                 {{ Html::link(route('admin.project.edit', [$project->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
                                 {{ Html::link(route('admin.project.show', [$project->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
