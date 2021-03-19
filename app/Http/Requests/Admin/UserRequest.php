@@ -32,6 +32,7 @@ class UserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => ['required','string','email', 'max:255', $unique],
             'password' => $password,
+            'is_admin' => 'nullable|boolean',
         ];
     }
 }

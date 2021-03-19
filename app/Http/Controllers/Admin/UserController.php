@@ -57,6 +57,7 @@ class UserController extends Controller
             User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'is_admin' => isset($data['is_admin']) ? $data['is_admin']:false,
                 'password' => Hash::make($data['password']),
             ]);
             $status = ExecResult::SUCCESS;
@@ -113,6 +114,7 @@ class UserController extends Controller
         $user->fill([
             'name' => $data['name'],
             'email' => $data['email'],
+            'is_admin' => isset($data['is_admin']) ? $data['is_admin']:false,
             'password' => $data['password'] !== null ? Hash::make($data['password']) : $user->password,
         ]);
 

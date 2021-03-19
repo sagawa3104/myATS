@@ -42,6 +42,13 @@
                             <p class="text-danger">{{ $message }}</p>
                         @enderror
                     </div>
+                    <label for="is_admin">管理者権限</label>
+                    <div class="form-check mb-3 pb-3">
+                        {{ Form::checkbox('is_admin', 1, null, ['class' => 'form-check-input', 'id' => 'is_admin']) }}
+                        @error('is_admin')
+                        <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">

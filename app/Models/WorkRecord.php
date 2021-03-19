@@ -19,6 +19,10 @@ class WorkRecord extends Model
         'overtime',
     ];
 
+    public function user(){
+        return $this->belongsTo('App\Models\User');
+    }
+
     public function workRecordDetails()
     {
         return $this->hasMany('App\Models\WorkRecordDetail');

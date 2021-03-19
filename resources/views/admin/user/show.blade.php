@@ -29,6 +29,10 @@
                         <label for="password">パスワード</label>
                         {{ Form::password('password', ['class' => 'form-control', 'id' => 'password', 'readonly' => 'true']) }}
                     </div>
+                    <label for="is_admin">管理者権限</label>
+                    <div class="form-check mb-3 pb-3">
+                        {{ Form::checkbox('is_admin', 1, null, ['class' => 'form-check-input', 'id' => 'is_admin', 'disabled']) }}
+                    </div>
                 </div>
                 <div class="card-footer">
                     <div class="btn-group" role="group">

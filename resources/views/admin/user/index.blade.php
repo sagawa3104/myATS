@@ -18,16 +18,17 @@
                 <div class="card-body p-0">
                     <table class="table table-hover">
                         <tr>
-                            <th class="text-nowrap">col1</th>
-                            <th class="text-nowrap">col2</th>
-                            <th class="text-nowrap">col3</th>
-                            <th class="text-nowrap">col4</th>
+                            <th class="text-nowrap">ID</th>
+                            <th class="text-nowrap">ユーザー名</th>
+                            <th class="text-nowrap">メールアドレス</th>
+                            <th class="text-nowrap">管理者権限</th>
                         </tr>
                     @foreach ($users as $user)
                         <tr>
                             <td>{{ $user->id}}</td>
                             <td>{{ $user->name}}</td>
                             <td>{{ $user->email}}</td>
+                            <td>{{ $user->getStrIsAdmin()}}</td>
                             <td>
                                 {{ Html::link(route('admin.user.edit', [$user->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
                                 {{ Html::link(route('admin.user.show', [$user->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
