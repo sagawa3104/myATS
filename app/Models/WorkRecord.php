@@ -19,7 +19,8 @@ class WorkRecord extends Model
         'overtime',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
@@ -39,5 +40,14 @@ class WorkRecord extends Model
     public function intOverTimeToStrHour()
     {
         return StrtotimeConverter::intMinuteToStrHour($this->overtime);
+    }
+
+    public function hisAttendedAtToHiFormat()
+    {
+        return StrtotimeConverter::intMinuteToStrHour($this->attended_at);
+    }
+    public function hisLeftAtToHiFormat()
+    {
+        return StrtotimeConverter::intMinuteToStrHour($this->left_at);
     }
 }

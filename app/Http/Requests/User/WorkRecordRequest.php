@@ -8,7 +8,6 @@ use Illuminate\Validation\Rule;
 
 class WorkRecordRequest extends FormRequest
 {
-    private const NINEHOURSTOMINUTES = 540;
     private const EIGHTHOURSTOMINUTES = 480;
     private const BREAKTIME_L = 60;
     private const BREAKTIME_S = 45;
@@ -35,28 +34,26 @@ class WorkRecordRequest extends FormRequest
         $validator->after(function ($validator) {
             $data = $this->validationData();
 
-            $projects = $data['project_id'];
-            $work_times = $data['work_time'];
-            $contents = $data['content'];
+            $workRecordDetails = $data['workRecordDetails'];
 
             //作業合計時間を算定
             $detail_work_time = 0;
-            for ($i = 0; $i < count($projects); $i++) {
-                if (is_null($projects[$i])) continue;
+            foreach ($workRecordDetails as $index => $workRecordDetail) {
+                if (is_null($workRecordDetail['project_id'])) continue;
 
-                if (is_null($work_times[$i])) {
-                    $validator->errors()->add('work_time.' . $i, '作業時間を入力してください');
+                if (is_null($workRecordDetail['work_time'])) {
+                    $validator->errors()->add('workRecordDetail.' . $index . '.work_time', '作業時間を入力してください');
                 }
 
-                if (is_null($contents[$i])) {
-                    $validator->errors()->add('content.' . $i, '作業内容を入力してください');
+                if (is_null($workRecordDetail['content'])) {
+                    $validator->errors()->add('workRecordDetail.' . $index . '.content', '作業内容を入力してください');
                 }
 
-                $detail_work_time += StrtotimeConverter::strHourToIntMinute($work_times[$i]);
+                $detail_work_time += isset($workRecordDetail['work_time']) ? StrtotimeConverter::strHourToIntMinute($workRecordDetail['work_time']) : 0;
             }
 
             //作業合計時間に基づき、休憩時間、超過時間を算定
-            $break_time = $detail_work_time < self::NINEHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
+            $break_time = $detail_work_time < self::EIGHTHOURSTOMINUTES ? self::BREAKTIME_S : self::BREAKTIME_L;
             $overtime = $detail_work_time - self::EIGHTHOURSTOMINUTES;
 
             //出勤時刻・退勤時刻から算定した時間と作業合計時間の検証            
@@ -82,15 +79,14 @@ class WorkRecordRequest extends FormRequest
     public function rules()
     {
         $unique = Rule::unique('work_records', 'workday');
-        $unique = isset($this->workrecord)? $unique->ignore($this->workrecord->id):$unique;
+        $unique = isset($this->workrecord) ? $unique->ignore($this->workrecord->id) : $unique;
         return [
-            'workday' => ['required','date',$unique],
+            'workday' => ['required', 'date', $unique],
             'attended_at' => 'required|date_format:H:i|',
             'left_at' => 'required|date_format:H:i|after:attended_at',
-            'project_id.*' => 'nullable|exists:projects,id',
-            'work_time.*' => 'nullable|date_format:H:i',
-            'content.*' => 'nullable|max:255',
+            'workRecordDetail.*.project_id' => 'nullable|exists:projects,id',
+            'workRecordDetail.*.work_time' => 'nullable|date_format:H:i',
+            'workRecordDetail.*.content' => 'nullable|max:255',
         ];
     }
-
 }

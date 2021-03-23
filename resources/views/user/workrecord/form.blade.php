@@ -35,12 +35,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="attended_at">勤務開始時間</label>
-                                {{ Form::time('attended_at', null, ['class' => 'form-control', 'id' => 'workday']) }}
+                                {{ Form::time('attended_at', null, ['class' => 'form-control', 'id' => 'attended_at']) }}
                                 @error('attended_at')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
                                 <label for="left_at">勤務終了時間</label>
-                                {{ Form::time('left_at', null, ['class' => 'form-control', 'id' => 'workday']) }}
+                                {{ Form::time('left_at', null, ['class' => 'form-control', 'id' => 'left_at']) }}
                                 @error('left_at')
                                     <p class="text-danger">{{ $message }}</p>
                                 @enderror
@@ -68,17 +68,17 @@
                                 </thead>
                                 <tbody>
                                     @if(isset($workrecord->id))
-                                        @empty(old('project_id'))
-                                            @foreach($workrecord->workRecordDetails as $workRecordDetail)
-                                                <tr>
+                                        @empty(old('workRecordDetails'))
+                                            @foreach($workrecord->workRecordDetails as $index => $workRecordDetail)
+                                                <tr id={{"workRecordDetails_${index}"}} >
                                                     <td>
-                                                        {{ Form::select('project_id[]', $projects, $workRecordDetail->project_id, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, $workRecordDetail->project_id, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
                                                     </td>
                                                     <td>
-                                                        {{ Form::time('work_time[]', $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                        {{ Form::time("workRecordDetails[${index}][work_time]", $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => "${index}_work_time" ]) }}
                                                     </td>
                                                     <td>
-                                                        {{ Form::text('content[]', $workRecordDetail->content, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                        {{ Form::text("workRecordDetails[${index}][content]", $workRecordDetail->content, ['class' => 'form-control', 'id' => "${index}_content" ]) }}
                                                     </td>
                                                     <td>
                                                         {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
@@ -86,23 +86,23 @@
                                                 </tr>
                                             @endforeach
                                         @else
-                                            @for ($i=0; $i< count(old('project_id')) ;$i++)
-                                                <tr>
+                                            @for ($index=0; $index< count(old('workRecordDetails')) ;$index++)
+                                                <tr id={{"workRecordDetails_${index}"}}>
                                                     <td>
-                                                        {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
-                                                        @error('project_id.'.$i)
+                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, null, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.project_id')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
-                                                        @error('work_time.'.$i)
+                                                        {{ Form::time("workRecordDetails[${index}][work_time]", null, ['class' => 'form-control', 'id' => "${index}_work_time" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.work_time')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
-                                                        @error('content.'.$i)
+                                                        {{ Form::text("workRecordDetails[${index}][content]", null, ['class' => 'form-control', 'id' => "${index}_content" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.content')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
@@ -113,39 +113,39 @@
                                             @endfor
                                         @endempty
                                     @else
-                                        @empty(old('project_id'))
-                                            <tr>
+                                        @empty(old('workRecordDetails'))
+                                            <tr id={{"workRecordDetails_0"}}>
                                                 <td>
-                                                    {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
+                                                    {{ Form::select("workRecordDetails[0][project_id]", $projects, null, ['class' => 'form-control', 'id' => "0_project_id" ]) }}
                                                 </td>
                                                 <td>
-                                                    {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
+                                                    {{ Form::time("workRecordDetails[0][work_time]", null, ['class' => 'form-control', 'id' => "0_work_time" ]) }}
                                                 </td>
                                                 <td>
-                                                    {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
+                                                    {{ Form::text("workRecordDetails[0][content]", null, ['class' => 'form-control', 'id' => "0_content" ]) }}
                                                 </td>
                                                 <td>
                                                     {{ Form::button('行削除', ['class' => 'btn btn-secondary mx-1 my-1', 'id' => 'deleteRow']) }}
                                                 </td>
                                             </tr>
                                         @else
-                                            @for ($i=0; $i< count(old('project_id')) ;$i++)
-                                                <tr>
+                                            @for ($index=0; $index< count(old('workRecordDetails')) ;$index++)
+                                                <tr id={{"workRecordDetails_${index}"}}>
                                                     <td>
-                                                        {{ Form::select('project_id[]', $projects, null, ['class' => 'form-control', 'id' => 'project_id[]' ]) }}
-                                                        @error('project_id.'.$i)
+                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, null, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.project_id')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        {{ Form::time('work_time[]', null, ['class' => 'form-control', 'id' => 'work_time[]' ]) }}
-                                                        @error('work_time.'.$i)
+                                                        {{ Form::time("workRecordDetails[${index}][work_time]", null, ['class' => 'form-control', 'id' => "${index}_work_time" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.work_time')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        {{ Form::text('content[]', null, ['class' => 'form-control', 'id' => 'content[]' ]) }}
-                                                        @error('content.'.$i)
+                                                        {{ Form::text("workRecordDetails[${index}][content]", null, ['class' => 'form-control', 'id' => "${index}_content" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.content')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
@@ -180,11 +180,38 @@
 
 @section('js')
 <script>
-    const addDetail = document.querySelector('#addDetail');
-    addDetail.addEventListener('click', function(){
-        $('#detailTable tbody tr:last-child').clone(true).appendTo('#detailTable tbody');
+    let rows =  $('#detailTable tbody').children().length;
+    const WORKRECORDDETAILS ='workRecordDetails';
+    const PROJECT_ID = 'project_id';
+    const WORK_TIME = 'work_time';
+    const CONTENT = 'content';
+    $(document).on('click', '#addDetail', function(){
+        $('#detailTable tbody tr:last-child').clone(true).attr('id', 'workRecordDetails_'+rows).appendTo('#detailTable tbody');
+        
 
-        $("#detailTable tbody tr:last-child input").val("");
+        $('#detailTable tbody tr:last-child td [name^="workRecordDetails"]').each(function (index, elem){
+            switch($(elem).attr('id').replace(/\d+_/, '')){
+                case PROJECT_ID:
+                    $(elem).attr('id', rows+'_'+PROJECT_ID);
+                    $(elem).attr('name', WORKRECORDDETAILS+'['+rows+']'+'['+PROJECT_ID+']')
+                    console.log($(elem).attr('name'));
+                break;
+                case WORK_TIME:
+                    $(elem).attr('id', rows+'_'+WORK_TIME);
+                    $(elem).attr('name', WORKRECORDDETAILS+'['+rows+']'+'['+WORK_TIME+']')
+                    console.log($(elem).attr('name'));
+                    break;
+                    case CONTENT:
+                    $(elem).attr('id', rows+'_'+CONTENT);
+                    $(elem).attr('name', WORKRECORDDETAILS+'['+rows+']'+'['+CONTENT+']')
+                    console.log($(elem).attr('name'));
+                break;
+            }
+
+        });
+
+        $('#detailTable tbody tr:last-child td [name^="workRecordDetails"]').val("");
+        rows++;
     });
 
     $(document).on('click', '#deleteRow', function(){
