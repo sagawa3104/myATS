@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
 use App\Utils\StrtotimeConverter;
+use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +80,7 @@ class WorkRecordController extends Controller
             'overtime' => $data['overtime'],
         ]);
 
-        $workRecordDetails = $this->setWorkRecordDetails($data);
+        $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
 
         DB::beginTransaction();
         try {
@@ -105,7 +106,7 @@ class WorkRecordController extends Controller
     public function show(User $user, WorkRecord $workrecord)
     {
         $porjects = Project::selectList();
-        return view('user.workrecord.show',[
+        return view('user.workrecord.show', [
             'user' => $user,
             'workrecord' => $workrecord,
             'projects' => $porjects,
@@ -122,7 +123,11 @@ class WorkRecordController extends Controller
     {
         //
         $porjects = Project::selectList();
-        return view('user.workrecord.form',[
+        $workrecord->fill([
+            'attended_at' => StrtotimeConverter::convertTimeFormat($workrecord->attended_at),
+            'left_at' => StrtotimeConverter::convertTimeFormat($workrecord->left_at),
+        ]);
+        return view('user.workrecord.form', [
             'user' => $user,
             'workrecord' => $workrecord,
             'projects' => $porjects,
@@ -147,7 +152,7 @@ class WorkRecordController extends Controller
         $workrecord->fill($data);
         $oldWorkRecordDetails = $workrecord->workRecordDetails();
 
-        $workRecordDetails = $this->setWorkRecordDetails($data);
+        $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
 
         DB::beginTransaction();
         try {
@@ -163,7 +168,6 @@ class WorkRecordController extends Controller
         DB::commit();
 
         return redirect(route('user.workrecord.index', [$user->id]));
-
     }
 
     /**
@@ -181,12 +185,12 @@ class WorkRecordController extends Controller
     private function setWorkRecordDetails($data)
     {
         $workRecordDetails = array();
-        for ($i = 0; $i < count($data['project_id']); $i++) {
-            if (is_null($data['project_id'][$i])) continue;
+        foreach ($data as $workRecordDetailData) {
+            if (is_null($workRecordDetailData['project_id'])) continue;
             $workRecordDetail = new WorkRecordDetail([
-                'project_id' => $data['project_id'][$i],
-                'work_time' => StrtotimeConverter::strHourToIntMinute($data['work_time'][$i]),
-                'content' => $data['content'][$i],
+                'project_id' => $workRecordDetailData['project_id'],
+                'work_time' => StrtotimeConverter::strHourToIntMinute($workRecordDetailData['work_time']),
+                'content' => $workRecordDetailData['content'],
             ]);
             array_push($workRecordDetails, $workRecordDetail);
         }
