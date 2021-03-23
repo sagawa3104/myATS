@@ -3,6 +3,7 @@
 namespace Tests\Unit\app\Utils;
 
 use App\Utils\StrtotimeConverter;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class StrtotimeConverterTest extends TestCase
@@ -33,5 +34,44 @@ class StrtotimeConverterTest extends TestCase
 
         $minusValue = -1200;
         $this->assertEquals("-20:00", StrtotimeConverter::intMinuteToStrHour($minusValue));
+    }
+
+    /**
+     * @test
+     * @dataProvider convertTimeFormatDataProvider
+     */
+    public function testConvertTimeFormat($param, $expected)
+    {
+        $this->assertEquals($expected, StrtotimeConverter::convertTimeFormat($param));
+    }
+
+    public function convertTimeFormatDataProvider()
+    {
+        return [
+            'NOT STRING' => [
+                1000,
+                false,
+            ],
+            'INVALID TIME FORMAT STRING JUST STRING' => [
+                'hoge',
+                false,
+            ],
+            'INVALID TIME FORMAT STRING OVER 24 HOUR A' => [
+                '25:00:00',
+                false,
+            ],
+            'INVALID TIME FORMAT STRING OVER 24 HOUR B' => [
+                '30:00:00',
+                false,
+            ],
+            'CONVERT LONG TO SHORT' => [
+                '10:00:00',
+                '10:00',
+            ],
+            'CONVERT SHORT TO LONG' => [
+                '10:00',
+                '10:00:00',
+            ],
+        ];
     }
 }
