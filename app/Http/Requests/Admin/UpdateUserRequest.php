@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProjectRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,12 @@ class ProjectRequest extends FormRequest
      */
     public function rules()
     {
-        $unique = Rule::unique('projects', 'code');
-        $unique = isset($this->project)? $unique->ignore($this->project->id):$unique;
+        $unique = Rule::unique('users', 'email')->ignore($this->user->id);
         return [
-            'code' => ['required','string','max:255',$unique],
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', $unique],
+            'password' => ['nullable', 'min:8'],
+            'is_admin' => ['nullable', 'boolean'],
         ];
     }
 }

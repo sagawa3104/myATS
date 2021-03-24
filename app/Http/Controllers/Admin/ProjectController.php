@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ProjectRequest;
+use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use App\Models\Project;
 use App\Utils\Consts\ExecResult;
 use Exception;
@@ -53,7 +54,7 @@ class ProjectController extends Controller
      * @param  App\Http\Requests\Admin\StoreProjectRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProjectRequest $request)
+    public function store(StoreProjectRequest $request)
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
@@ -109,7 +110,7 @@ class ProjectController extends Controller
      * @param  App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(ProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
         $status = ExecResult::FAILURE;
         $data = $request->all();

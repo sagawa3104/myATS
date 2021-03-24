@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UserRequest;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use App\Utils\Consts\ExecResult;
 use Exception;
@@ -55,7 +56,7 @@ class UserController extends Controller
      * @param  App\Http\Requests\Admin\StoreUserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
@@ -63,7 +64,7 @@ class UserController extends Controller
             User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'is_admin' => isset($data['is_admin']) ? $data['is_admin']:false,
+                'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
                 'password' => Hash::make($data['password']),
             ]);
             $status = ExecResult::SUCCESS;
@@ -113,14 +114,14 @@ class UserController extends Controller
      * @param  App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $status = ExecResult::FAILURE;
         $data = $request->all();
         $user->fill([
             'name' => $data['name'],
             'email' => $data['email'],
-            'is_admin' => isset($data['is_admin']) ? $data['is_admin']:false,
+            'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
             'password' => $data['password'] !== null ? Hash::make($data['password']) : $user->password,
         ]);
 
