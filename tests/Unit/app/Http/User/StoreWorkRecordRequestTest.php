@@ -3,8 +3,9 @@
 namespace Tests\Unit\app\Http\User;
 
 use App\Http\Requests\User\StoreWorkRecordRequest;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Validator;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class StoreWorkRecordRequestTest extends TestCase
 {
@@ -52,27 +53,36 @@ class StoreWorkRecordRequestTest extends TestCase
         //Assert
         $this->assertEquals($expected, isset($result[$target]));
     }
+
     /**
      * A basic unit test example.
      * @test
      * @param array
-     * @param string
      * @param boolean
-     * @dataProvider requestOkDataProvider
+     * @dataProvider requestNgRelationnalDataProvider
      */
-    public function 関係テスト_NG(array $data, $target, $expected)
+    public function 関係テスト_NG(array $data, $expected)
+    {
+
+        $this->assertTrue($this->validate($data));
+    }
+
+    protected function validate($data)
     {
         //Arrange
-        $request = new StoreWorkRecordRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($data, $rules);
+        $this->app->resolving(StoreWorkRecordRequest::class, function ($resolved) use ($data) {
+            $resolved->merge($data);
+        });
 
         //Act
-        $validator->fails();
-        $result = $validator->failed();
+        try {
+            app(StoreWorkRecordRequest::class);
 
-        //Assert
-        $this->assertEquals($expected, isset($result[$target]));
+            return false;
+        } catch (ValidationException $e) {
+
+            return true;
+        }
     }
 
     public function requestNgDataProvider()
@@ -288,6 +298,32 @@ class StoreWorkRecordRequestTest extends TestCase
                 ],
                 'workRecordDetail.0.content',
                 false,
+            ],
+        ];
+    }
+
+    public function requestNgRelationnalDataProvider()
+    {
+        return [
+            'test' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '05:00',
+                            'content' => 'content2',
+                        ],
+                    ],
+                ],
+                true,
             ],
         ];
     }
