@@ -24,10 +24,9 @@ class StoreUserRequest extends FormRequest
      */
     public function rules()
     {
-        $unique = Rule::unique('users', 'email');
         return [
             'name' => ['required', 'max:255'],
-            'email' => ['required', 'max:255', 'email', $unique],
+            'email' => ['required', 'max:255', 'email'],
             'password' => ['required', 'min:8'],
             'is_admin' => ['nullable', 'boolean'],
         ];
