@@ -58,11 +58,13 @@ class ProjectController extends Controller
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
+        $project = new Project([
+            'code' => $data['code'],
+            'name' => $data['name'],
+        ]);
+        $project->validate();
         try {
-            Project::create([
-                'code' => $data['code'],
-                'name' => $data['name'],
-            ]);
+            $project->save();
             $status = ExecResult::SUCCESS;
             $message = '登録が完了しました';
         } catch (Exception $e) {
@@ -118,6 +120,7 @@ class ProjectController extends Controller
             'code' => $data['code'],
             'name' => $data['name'],
         ]);
+        $project->validate();
 
         try {
             $project->save();

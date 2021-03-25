@@ -24,9 +24,8 @@ class StoreProjectRequest extends FormRequest
      */
     public function rules()
     {
-        $unique = Rule::unique('projects', 'code');
         return [
-            'code' => ['required', 'max:255', $unique],
+            'code' => ['required', 'max:255'],
             'name' => ['required', 'max:255'],
         ];
     }

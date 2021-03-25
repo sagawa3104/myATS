@@ -60,13 +60,17 @@ class UserController extends Controller
     {
         $data = $request->all();
         $status = ExecResult::FAILURE;
+
+        $user = new User([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
+            'password' => Hash::make($data['password']),
+        ]);
+        $user->validate();
+
         try {
-            User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
-                'password' => Hash::make($data['password']),
-            ]);
+            $user->save();
             $status = ExecResult::SUCCESS;
             $message = '登録が完了しました';
         } catch (Exception $e) {
@@ -124,6 +128,7 @@ class UserController extends Controller
             'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
             'password' => $data['password'] !== null ? Hash::make($data['password']) : $user->password,
         ]);
+        $user->validate();
 
         try {
             $user->save();

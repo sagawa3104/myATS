@@ -24,10 +24,9 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        $unique = Rule::unique('users', 'email')->ignore($this->user->id);
         return [
             'name' => ['required', 'max:255'],
-            'email' => ['required', 'max:255', 'email', $unique],
+            'email' => ['required', 'max:255', 'email'],
             'password' => ['nullable', 'min:8'],
             'is_admin' => ['nullable', 'boolean'],
         ];
