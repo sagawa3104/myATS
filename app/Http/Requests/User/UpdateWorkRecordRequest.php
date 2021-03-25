@@ -6,7 +6,7 @@ use App\Utils\StrtotimeConverter;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class WorkRecordRequest extends FormRequest
+class UpdateWorkRecordRequest extends FormRequest
 {
     private const EIGHTHOURSTOMINUTES = 480;
     private const BREAKTIME_L = 60;
@@ -81,12 +81,12 @@ class WorkRecordRequest extends FormRequest
         $unique = Rule::unique('work_records', 'workday');
         $unique = isset($this->workrecord) ? $unique->ignore($this->workrecord->id) : $unique;
         return [
-            'workday' => ['required', 'date', $unique],
-            'attended_at' => 'required|date_format:H:i|',
-            'left_at' => 'required|date_format:H:i|after:attended_at',
-            'workRecordDetail.*.project_id' => 'nullable|exists:projects,id',
-            'workRecordDetail.*.work_time' => 'nullable|date_format:H:i',
-            'workRecordDetail.*.content' => 'nullable|max:255',
+            'workday' => ['required', 'date'],
+            'attended_at' => ['required', 'date_format:H:i'],
+            'left_at' => ['required', 'date_format:H:i', 'after:attended_at'],
+            'workRecordDetail.*.project_id' => ['numeric'],
+            'workRecordDetail.*.work_time' => ['date_format:H:i'],
+            'workRecordDetail.*.content' => ['max:255'],
         ];
     }
 }
