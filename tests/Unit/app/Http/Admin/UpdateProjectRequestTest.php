@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\app\Http\Admin;
 
-use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
@@ -12,79 +12,131 @@ class UpdateProjectRequestTest extends TestCase
      * A basic unit test example.
      * @test
      * @param array
+     * @param string
      * @param boolean
-     * @dataProvider requestDataProvider
+     * @dataProvider requestNgDataProvider
      */
-    public function 更新時のリクエスト(array $data, $expected)
+    public function 単体データテスト_NG(array $data, $target, $rule, $expected)
     {
-        $request = new StoreProjectRequest();
+        //Arrange
+        $request = new UpdateProjectRequest();
         $rules = $request->rules();
         $validator = Validator::make($data, $rules);
-        $result = $validator->fails();
 
-        $this->assertEquals($expected, $result);
+        //Act
+        $validator->fails();
+
+        $result = $validator->failed();
+
+        //Assert
+        $this->assertEquals($expected, isset($result[$target][$rule]));
+    }
+    /**
+     * A basic unit test example.
+     * @test
+     * @param array
+     * @param string
+     * @param boolean
+     * @dataProvider requestOkDataProvider
+     */
+    public function 単体データテスト_OK(array $data, $target, $expected)
+    {
+        //Arrange
+        $request = new UpdateProjectRequest();
+        $rules = $request->rules();
+        $validator = Validator::make($data, $rules);
+
+        //Act
+        $validator->fails();
+
+        $result = $validator->failed();
+
+        //Assert
+        $this->assertEquals($expected, isset($result[$target]));
     }
 
-    public function requestDataProvider()
+    public function requestNgDataProvider()
     {
         return [
-            '必須エラー1' => [
-                [
-                    'name' => 'hoge',
-                    'code' => null,
-                ],
+            'コード 必須エラー1' => [
+                [],
+                'code',
+                'Required',
                 true,
             ],
-            '必須エラー2' => [
+            'コード 必須エラー2' => [
                 [
-                    'name' => null,
-                    'code' => 'hoge',
-                ],
-                true,
-            ],
-            '必須エラー3' => [
-                [
-                    'name' => 'hoge',
                     'code' => '',
                 ],
+                'code',
+                'Required',
                 true,
             ],
-            '必須エラー4' => [
+            'コード 必須エラー3' => [
                 [
-                    'name' => '',
-                    'code' => 'hoge',
+                    'code' => null,
                 ],
+                'code',
+                'Required',
                 true,
             ],
-            '桁数エラー1' => [
+            'コード 桁数エラー' => [
                 [
-                    'name' => str_repeat('a', 256),
-                    'code' => 'hoge',
-                ],
-                true,
-            ],
-            '桁数エラー2' => [
-                [
-                    'name' => 'hoge',
                     'code' => str_repeat('a', 256),
                 ],
+                'code',
+                'Max',
                 true,
             ],
-            '正常1' => [
-                [
-                    'name' => str_repeat('a', 255),
-                    'code' => 'hoge',
-                ],
-                false,
+            '名前 必須エラー1' => [
+                [],
+                'name',
+                'Required',
+                true,
             ],
-            '正常2' => [
+            '名前 必須エラー2' => [
                 [
-                    'name' => 'hoge',
+                    'name' => '',
+                ],
+                'name',
+                'Required',
+                true,
+            ],
+            '名前 必須エラー3' => [
+                [
+                    'name' => null,
+                ],
+                'name',
+                'Required',
+                true,
+            ],
+            '名前 桁数エラー' => [
+                [
+                    'name' => str_repeat('a', 256),
+                ],
+                'name',
+                'Max',
+                true,
+            ],
+        ];
+    }
+    public function requestOkDataProvider()
+    {
+        return [
+            'コード' => [
+                [
                     'code' => str_repeat('a', 255),
                 ],
+                'code',
                 false,
             ],
-
+            '名前' => [
+                [
+                    'name' => str_repeat('a', 255),
+                ],
+                'name',
+                false,
+            ],
         ];
     }
 }

@@ -10,12 +10,13 @@ class StoreUserRequestTest extends TestCase
 {
     /**
      * A basic unit test example.
+     * @test
      * @param array
      * @param string
      * @param boolean
-     * @dataProvider requestDataProvider
+     * @dataProvider requestNgDataProvider
      */
-    public function testProjectRequest(array $data, $target, $rule, $expected)
+    public function 単体データテスト_NG(array $data, $target, $rule, $expected)
     {
         //Arrange
         $request = new StoreUserRequest();
@@ -30,16 +31,35 @@ class StoreUserRequestTest extends TestCase
         //Assert
         $this->assertEquals($expected, isset($result[$target][$rule]));
     }
+    /**
+     * A basic unit test example.
+     * @test
+     * @param array
+     * @param string
+     * @param boolean
+     * @dataProvider requestOkDataProvider
+     */
+    public function 単体データテスト_OK(array $data, $target, $expected)
+    {
+        //Arrange
+        $request = new StoreUserRequest();
+        $rules = $request->rules();
+        $validator = Validator::make($data, $rules);
 
-    public function requestDataProvider()
+        //Act
+        $validator->fails();
+
+        $result = $validator->failed();
+
+        //Assert
+        $this->assertEquals($expected, isset($result[$target]));
+    }
+
+    public function requestNgDataProvider()
     {
         return [
             '名前 必須エラー1' => [
-                [
-                    'email' => null,
-                    'password' => null,
-                    'id_admin' => null,
-                ],
+                [],
                 'name',
                 'Required',
                 true,
@@ -47,9 +67,6 @@ class StoreUserRequestTest extends TestCase
             '名前 必須エラー2' => [
                 [
                     'name' => '',
-                    'email' => null,
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'name',
                 'Required',
@@ -58,9 +75,6 @@ class StoreUserRequestTest extends TestCase
             '名前 必須エラー3' => [
                 [
                     'name' => null,
-                    'email' => null,
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'name',
                 'Required',
@@ -69,30 +83,20 @@ class StoreUserRequestTest extends TestCase
             '名前 桁数エラー' => [
                 [
                     'name' => str_repeat('a', 256),
-                    'email' => null,
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'name',
                 'Max',
                 true,
             ],
             'email 必須エラー1' => [
-                [
-                    'name' => null,
-                    'password' => null,
-                    'id_admin' => null,
-                ],
+                [],
                 'email',
                 'Required',
                 true,
             ],
             'email 必須エラー2' => [
                 [
-                    'name' => null,
                     'email' => '',
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'email',
                 'Required',
@@ -100,10 +104,7 @@ class StoreUserRequestTest extends TestCase
             ],
             'email 必須エラー3' => [
                 [
-                    'name' => null,
                     'email' => null,
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'email',
                 'Required',
@@ -111,10 +112,7 @@ class StoreUserRequestTest extends TestCase
             ],
             'email 桁数エラー' => [
                 [
-                    'name' => null,
                     'email' => str_repeat('a', 256),
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'email',
                 'Max',
@@ -122,31 +120,21 @@ class StoreUserRequestTest extends TestCase
             ],
             'email 形式エラー' => [
                 [
-                    'name' => null,
                     'email' => 'hoge',
-                    'password' => null,
-                    'id_admin' => null,
                 ],
                 'email',
                 'Email',
                 true,
             ],
             'パスワード 必須エラー1' => [
-                [
-                    'name' => null,
-                    'email' => null,
-                    'id_admin' => null,
-                ],
+                [],
                 'password',
                 'Required',
                 true,
             ],
             'パスワード 必須エラー2' => [
                 [
-                    'name' => null,
-                    'email' => null,
                     'password' => '',
-                    'id_admin' => null,
                 ],
                 'password',
                 'Required',
@@ -154,10 +142,7 @@ class StoreUserRequestTest extends TestCase
             ],
             'パスワード 必須エラー3' => [
                 [
-                    'name' => null,
-                    'email' => null,
                     'password' => null,
-                    'id_admin' => null,
                 ],
                 'password',
                 'Required',
@@ -165,41 +150,14 @@ class StoreUserRequestTest extends TestCase
             ],
             'パスワード 桁数エラー' => [
                 [
-                    'name' => null,
-                    'email' => null,
                     'password' => str_repeat('a', 7),
-                    'id_admin' => null,
                 ],
                 'password',
                 'Min',
                 true,
             ],
-            '管理者権限 NULL許可' => [
-                [
-                    'name' => null,
-                    'email' => null,
-                    'password' => null,
-                    'is_admin' => null,
-                ],
-                'is_admin',
-                null,
-                false,
-            ],
-            '管理者権限 NULL許可' => [
-                [
-                    'name' => null,
-                    'email' => null,
-                    'password' => null,
-                ],
-                'is_admin',
-                null,
-                false,
-            ],
             '管理者権限 非Bool値' => [
                 [
-                    'name' => null,
-                    'email' => null,
-                    'password' => null,
                     'is_admin' => 999,
                 ],
                 'is_admin',
@@ -207,6 +165,51 @@ class StoreUserRequestTest extends TestCase
                 true,
             ],
 
+        ];
+    }
+    public function requestOkDataProvider()
+    {
+        return [
+            '名前' => [
+                [
+                    'name' => str_repeat('a', 255),
+                ],
+                'name',
+                false,
+            ],
+            'Email' => [
+                [
+                    'email' => str_repeat('a', 243) . '@example.com',
+                ],
+                'email',
+                false,
+            ],
+            'パスワード' => [
+                [
+                    'password' => str_repeat('a', 8),
+                ],
+                'password',
+                false,
+            ],
+            '管理者権限 NULL許可' => [
+                [],
+                'is_admin',
+                false,
+            ],
+            '管理者権限 NULL許可' => [
+                [
+                    'is_admin' => null,
+                ],
+                'is_admin',
+                false,
+            ],
+            '管理者権限' => [
+                [
+                    'is_admin' => 0,
+                ],
+                'is_admin',
+                false,
+            ],
         ];
     }
 }
