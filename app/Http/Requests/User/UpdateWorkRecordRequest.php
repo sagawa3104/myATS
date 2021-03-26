@@ -39,13 +39,13 @@ class UpdateWorkRecordRequest extends FormRequest
             //作業合計時間を算定
             $detail_work_time = 0;
             foreach ($workRecordDetails as $index => $workRecordDetail) {
-                if (is_null($workRecordDetail['project_id'])) continue;
+                if (!isset($workRecordDetail['project_id'])) continue;
 
-                if (is_null($workRecordDetail['work_time'])) {
+                if (!isset($workRecordDetail['work_time'])) {
                     $validator->errors()->add('workRecordDetail.' . $index . '.work_time', '作業時間を入力してください');
                 }
 
-                if (is_null($workRecordDetail['content'])) {
+                if (!isset($workRecordDetail['content'])) {
                     $validator->errors()->add('workRecordDetail.' . $index . '.content', '作業内容を入力してください');
                 }
 
@@ -81,7 +81,7 @@ class UpdateWorkRecordRequest extends FormRequest
         $unique = Rule::unique('work_records', 'workday');
         $unique = isset($this->workrecord) ? $unique->ignore($this->workrecord->id) : $unique;
         return [
-            'workday' => ['required', 'date'],
+            'workday' => ['required', 'date_format:Y-m-d'],
             'attended_at' => ['required', 'date_format:H:i'],
             'left_at' => ['required', 'date_format:H:i', 'after:attended_at'],
             'workRecordDetail.*.project_id' => ['numeric'],
