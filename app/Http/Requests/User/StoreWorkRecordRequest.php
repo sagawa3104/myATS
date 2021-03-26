@@ -41,11 +41,11 @@ class StoreWorkRecordRequest extends FormRequest
             foreach ($workRecordDetails as $index => $workRecordDetail) {
                 if (is_null($workRecordDetail['project_id'])) continue;
 
-                if (is_null($workRecordDetail['work_time'])) {
+                if (!isset($workRecordDetail['work_time'])) {
                     $validator->errors()->add('workRecordDetail.' . $index . '.work_time', '作業時間を入力してください');
                 }
 
-                if (is_null($workRecordDetail['content'])) {
+                if (!isset($workRecordDetail['content'])) {
                     $validator->errors()->add('workRecordDetail.' . $index . '.content', '作業内容を入力してください');
                 }
 

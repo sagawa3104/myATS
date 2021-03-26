@@ -3,8 +3,8 @@
 namespace Tests\Unit\app\Http\User;
 
 use App\Http\Requests\User\StoreWorkRecordRequest;
-use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class StoreWorkRecordRequestTest extends TestCase
@@ -61,13 +61,7 @@ class StoreWorkRecordRequestTest extends TestCase
      * @param boolean
      * @dataProvider requestNgRelationnalDataProvider
      */
-    public function 関係テスト_NG(array $data, $expected)
-    {
-
-        $this->assertTrue($this->validate($data));
-    }
-
-    protected function validate($data)
+    public function 関係テスト_NG(array $data, $target, $expected)
     {
         //Arrange
         $this->app->resolving(StoreWorkRecordRequest::class, function ($resolved) use ($data) {
@@ -78,12 +72,67 @@ class StoreWorkRecordRequestTest extends TestCase
         try {
             app(StoreWorkRecordRequest::class);
 
-            return false;
+            $result = [];
         } catch (ValidationException $e) {
-
-            return true;
+            $result = $e->errors();
         }
+
+        //Assert
+        $this->assertEquals($expected, isset($result[$target]));
     }
+
+    /**
+     * A basic unit test example.
+     * @test
+     * @param array
+     * @param boolean
+     * @dataProvider requestOkRelationnalDataProvider
+     */
+    public function 関係テスト_OK(array $data, $expected)
+    {
+        //Arrange
+        $this->app->resolving(StoreWorkRecordRequest::class, function ($resolved) use ($data) {
+            $resolved->merge($data);
+        });
+
+        //Act
+        try {
+            app(StoreWorkRecordRequest::class);
+
+            $result = true;
+        } catch (ValidationException $e) {
+            $result = false;
+        }
+
+        //Assert
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * A basic unit test example.
+     * @test
+     * @param array
+     * @param boolean
+     * @dataProvider requestFilledDataProvider
+     */
+    public function 補完データ検証(array $data, $expected)
+    {
+        //Arrange
+        $this->app->resolving(StoreWorkRecordRequest::class, function ($resolved) use ($data) {
+            $resolved->merge($data);
+        });
+
+        //Act
+        try {
+            $result = app(StoreWorkRecordRequest::class)->all();
+        } catch (ValidationException $e) {
+            $result = false;
+        }
+
+        //Assert
+        $this->assertEquals($expected, $result);
+    }
+
 
     public function requestNgDataProvider()
     {
@@ -305,7 +354,37 @@ class StoreWorkRecordRequestTest extends TestCase
     public function requestNgRelationnalDataProvider()
     {
         return [
-            'test' => [
+            '作業時間未設定エラー' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'content' => 'content1',
+                        ],
+                    ],
+                ],
+                'workRecordDetail.0.work_time',
+                true,
+            ],
+            '作業内容未設定エラー' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '08:00',
+                        ],
+                    ],
+                ],
+                'workRecordDetail.0.content',
+                true,
+            ],
+            '合計時間エラー' => [
                 [
                     'workday' => '2020-01-01',
                     'attended_at' => '10:00',
@@ -323,7 +402,155 @@ class StoreWorkRecordRequestTest extends TestCase
                         ],
                     ],
                 ],
+                'sum_work_time',
                 true,
+            ],
+        ];
+    }
+    public function requestOkRelationnalDataProvider()
+    {
+        return [
+            'OK' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '04:00',
+                            'content' => 'content2',
+                        ],
+                    ],
+                ],
+                true,
+            ],
+        ];
+    }
+    public function requestFilledDataProvider()
+    {
+        return [
+            '実働時間 8時間(480分)以上は休憩1時間(60分) であり残業時間は0分' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '04:00',
+                            'content' => 'content2',
+                        ],
+                    ],
+                ],
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:00',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '04:00',
+                            'content' => 'content2',
+                        ],
+                    ],
+                    'working_time' => 480,
+                    'break_time' => 60,
+                    'overtime' => 0,
+                ],
+            ],
+            '実働時間 8時間(480分)を超過すると残業時間が加算される' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:01',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '04:01',
+                            'content' => 'content2',
+                        ],
+                    ],
+                ],
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '19:01',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '04:01',
+                            'content' => 'content2',
+                        ],
+                    ],
+                    'working_time' => 481,
+                    'break_time' => 60,
+                    'overtime' => 1,
+                ],
+            ],
+            '実働時間 8時間(480分)を不足すると休憩時間は45分となり、残業時間が減算される' => [
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '18:44',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '03:59',
+                            'content' => 'content2',
+                        ],
+                    ],
+                ],
+                [
+                    'workday' => '2020-01-01',
+                    'attended_at' => '10:00',
+                    'left_at' => '18:44',
+                    'workRecordDetails' => [
+                        0 => [
+                            'project_id' => 1,
+                            'work_time' => '04:00',
+                            'content' => 'content1',
+                        ],
+                        1 => [
+                            'project_id' => 2,
+                            'work_time' => '03:59',
+                            'content' => 'content2',
+                        ],
+                    ],
+                    'working_time' => 479,
+                    'break_time' => 45,
+                    'overtime' => -1,
+                ],
             ],
         ];
     }
