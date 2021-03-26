@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreWorkRecordRequest;
+use App\Http\Requests\User\UpdateWorkRecordRequest;
 use App\Http\Requests\User\WorkRecordRequest;
 use App\Models\Project;
 use App\Models\User;
@@ -14,6 +16,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class WorkRecordController extends Controller
 {
@@ -65,7 +68,7 @@ class WorkRecordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(WorkRecordRequest $request, User $user)
+    public function store(StoreWorkRecordRequest $request, User $user)
     {
         //
         $data = $request->all();
@@ -145,7 +148,7 @@ class WorkRecordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(WorkRecordRequest $request, User $user, WorkRecord $workrecord)
+    public function update(UpdateWorkRecordRequest $request, User $user, WorkRecord $workrecord)
     {
         //
         $data = $request->all();
@@ -153,6 +156,8 @@ class WorkRecordController extends Controller
         $oldWorkRecordDetails = $workrecord->workRecordDetails();
 
         $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
+        $workrecord->validate();
+
 
         DB::beginTransaction();
         try {
@@ -164,7 +169,6 @@ class WorkRecordController extends Controller
             DB::rollBack();
             return back()->withInput();
         }
-
         DB::commit();
 
         return redirect(route('user.workrecord.index', [$user->id]));
@@ -192,6 +196,11 @@ class WorkRecordController extends Controller
                 'work_time' => StrtotimeConverter::strHourToIntMinute($workRecordDetailData['work_time']),
                 'content' => $workRecordDetailData['content'],
             ]);
+            try {
+                $workRecordDetail->validate();
+            } catch (ValidationException $e) {
+                $errors = $e->errors();
+            }
             array_push($workRecordDetails, $workRecordDetail);
         }
 

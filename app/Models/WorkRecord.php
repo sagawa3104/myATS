@@ -5,9 +5,11 @@ namespace App\Models;
 use App\Utils\StrtotimeConverter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
 
 class WorkRecord extends Model
 {
+    use Validatable;
     //
     protected $fillable = [
         'user_id',
@@ -18,6 +20,20 @@ class WorkRecord extends Model
         'break_time',
         'overtime',
     ];
+
+    private function rules()
+    {
+        $unique = Rule::unique('work_records', 'workday');
+        $unique = isset($this->id) ? $unique->ignore($this->id) : $unique;
+        return [
+            'workday' => ['required', 'date_format:Y-m-d', $unique],
+            'attended_at' => ['required', 'date_format:H:i'],
+            'left_at' => ['required', 'date_format:H:i', 'after:attended_at'],
+            'working_time' => ['numeric'],
+            'break_time' => ['numeric'],
+            'overtime' => ['numeric'],
+        ];
+    }
 
     public function user()
     {
