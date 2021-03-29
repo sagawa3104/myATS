@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Utils\StrtotimeConverter;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 
 class WorkRecord extends Model

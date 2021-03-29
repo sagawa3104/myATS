@@ -5,16 +5,13 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreWorkRecordRequest;
 use App\Http\Requests\User\UpdateWorkRecordRequest;
-use App\Http\Requests\User\WorkRecordRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
 use App\Utils\StrtotimeConverter;
-use DateTime;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -28,10 +25,10 @@ class WorkRecordController extends Controller
     public function index(User $user)
     {
         //
-        $workrecords = WorkRecord::where('user_id', Auth::user()->id)->orderBy('workday', 'desc')->paginate(20);
+        $workrecords = WorkRecord::where('user_id', $user->id)->orderBy('workday', 'desc')->paginate(20);
 
         return view('user.workrecord.index', [
-            'user' => Auth::user(),
+            'user' => $user,
             'workrecords' => $workrecords,
         ]);
     }
@@ -73,23 +70,18 @@ class WorkRecordController extends Controller
         //
         $data = $request->all();
 
-        $workrecord = new WorkRecord([
-            'user_id' => $user->id,
-            'workday' => $data['workday'],
-            'attended_at' => $data['attended_at'],
-            'left_at' => $data['left_at'],
-            'working_time' => $data['working_time'],
-            'break_time' => $data['break_time'],
-            'overtime' => $data['overtime'],
-        ]);
+        $workRecord = new WorkRecord($data);
+        $workRecord->user_id = $user->id;
 
         $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
 
+        $workRecord->validate();
+
         DB::beginTransaction();
         try {
-            $workrecord->save();
+            $workRecord->save();
 
-            $workrecord->workRecordDetails()->saveMany($workRecordDetails);
+            $workRecord->workRecordDetails()->saveMany($workRecordDetails);
         } catch (Exception $e) {
             DB::rollBack();
             return back()->withInput();
@@ -158,7 +150,6 @@ class WorkRecordController extends Controller
         $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
         $workrecord->validate();
 
-
         DB::beginTransaction();
         try {
             $oldWorkRecordDetails->delete();
@@ -186,10 +177,18 @@ class WorkRecordController extends Controller
     }
 
 
+    /**
+     * 勤怠明細データの設定
+     * 
+     * @param array $data
+     * @return array App\Models\WorkRecordDetail
+     */
     private function setWorkRecordDetails($data)
     {
         $workRecordDetails = array();
-        foreach ($data as $workRecordDetailData) {
+        $errorValidator = null;
+        $errors = [];
+        foreach ($data as $index => $workRecordDetailData) {
             if (is_null($workRecordDetailData['project_id'])) continue;
             $workRecordDetail = new WorkRecordDetail([
                 'project_id' => $workRecordDetailData['project_id'],
@@ -198,10 +197,21 @@ class WorkRecordController extends Controller
             ]);
             try {
                 $workRecordDetail->validate();
+                array_push($workRecordDetails, $workRecordDetail);
             } catch (ValidationException $e) {
-                $errors = $e->errors();
+                if (is_null($errorValidator)) {
+                    $errorValidator = $e->validator;
+                }
+                $validationErrors = $e->errors();
+                foreach ($validationErrors as $key => $value) {
+                    $errors += ['workRecordDetail.' . $index . '.' . $key => $value];
+                }
             }
-            array_push($workRecordDetails, $workRecordDetail);
+        }
+
+        if (!is_null($errorValidator)) {
+            $errorValidator->errors()->merge($errors);
+            throw new ValidationException($errorValidator);
         }
 
         return $workRecordDetails;
