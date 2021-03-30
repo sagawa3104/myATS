@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit\app\Http\Admin;
+namespace Tests\Unit\app\Http\Requests\Admin;
 
-use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\Admin\StoreUserRequest;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class UpdateUserRequestTest extends TestCase
+class StoreUserRequestTest extends TestCase
 {
     /**
      * A basic unit test example.
@@ -19,7 +19,7 @@ class UpdateUserRequestTest extends TestCase
     public function 単体データテスト_NG(array $data, $target, $rule, $expected)
     {
         //Arrange
-        $request = new UpdateUserRequest();
+        $request = new StoreUserRequest();
         $rules = $request->rules();
         $validator = Validator::make($data, $rules);
 
@@ -42,7 +42,7 @@ class UpdateUserRequestTest extends TestCase
     public function 単体データテスト_OK(array $data, $target, $expected)
     {
         //Arrange
-        $request = new UpdateUserRequest();
+        $request = new StoreUserRequest();
         $rules = $request->rules();
         $validator = Validator::make($data, $rules);
 
@@ -126,6 +126,28 @@ class UpdateUserRequestTest extends TestCase
                 'Email',
                 true,
             ],
+            'パスワード 必須エラー1' => [
+                [],
+                'password',
+                'Required',
+                true,
+            ],
+            'パスワード 必須エラー2' => [
+                [
+                    'password' => '',
+                ],
+                'password',
+                'Required',
+                true,
+            ],
+            'パスワード 必須エラー3' => [
+                [
+                    'password' => null,
+                ],
+                'password',
+                'Required',
+                true,
+            ],
             'パスワード 桁数エラー' => [
                 [
                     'password' => str_repeat('a', 7),
@@ -142,9 +164,9 @@ class UpdateUserRequestTest extends TestCase
                 'Boolean',
                 true,
             ],
+
         ];
     }
-
     public function requestOkDataProvider()
     {
         return [
@@ -160,18 +182,6 @@ class UpdateUserRequestTest extends TestCase
                     'email' => str_repeat('a', 243) . '@example.com',
                 ],
                 'email',
-                false,
-            ],
-            'パスワード NULL許可' => [
-                [],
-                'password',
-                false,
-            ],
-            'パスワード NULL許可' => [
-                [
-                    'password' => null,
-                ],
-                'password',
                 false,
             ],
             'パスワード' => [

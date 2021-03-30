@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit\app\Http\Admin;
+namespace Tests\Unit\app\Http\Requests\Admin;
 
-use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
-class StoreProjectRequestTest extends TestCase
+class UpdateProjectRequestTest extends TestCase
 {
     /**
      * A basic unit test example.
@@ -19,7 +19,7 @@ class StoreProjectRequestTest extends TestCase
     public function 単体データテスト_NG(array $data, $target, $rule, $expected)
     {
         //Arrange
-        $request = new StoreProjectRequest();
+        $request = new UpdateProjectRequest();
         $rules = $request->rules();
         $validator = Validator::make($data, $rules);
 
@@ -42,7 +42,7 @@ class StoreProjectRequestTest extends TestCase
     public function 単体データテスト_OK(array $data, $target, $expected)
     {
         //Arrange
-        $request = new StoreProjectRequest();
+        $request = new UpdateProjectRequest();
         $rules = $request->rules();
         $validator = Validator::make($data, $rules);
 
