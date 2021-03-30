@@ -65,8 +65,8 @@ class UserController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
-            'password' => Hash::make($data['password']),
         ]);
+        $user->password = Hash::make($data['password']);
         $user->validate();
 
         try {

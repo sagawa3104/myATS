@@ -19,7 +19,7 @@ class Project extends Model
 
     private function rules()
     {
-        $unique = Rule::unique('users', 'email');
+        $unique = Rule::unique('projects', 'code');
         $unique = is_null($this->id) ? $unique : $unique->ignore($this->id);
         return [
             'code' => ['required', 'max:255', $unique],
