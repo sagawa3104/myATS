@@ -5,7 +5,6 @@ namespace Tests\Feature\app\Models;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
@@ -16,31 +15,46 @@ class ProjectTest extends TestCase
 
     /**
      * @test
-     * @dataProvider getStrIsAdminTestData
+     * @dataProvider selectListTestData
      */
-    public function is_adminの文字列変換テスト($data, $expected)
+    public function セレクトボックス格納用配列のテスト($data, $expected)
     {
         //Arrange
-        $project = new Project($data);
+        foreach ($data as $project) {
+            Project::create($project);
+        }
 
         //Act
-        $result = $project->getStrIsAdmin();
-
+        $result = Project::selectList();
         //Assert
         $this->assertEquals($expected, $result);
     }
 
-    public function getStrIsAdminTestData()
+    public function selectListTestData()
     {
         return [
-            '×' => [
-                ['is_admin' => false],
-                '×'
+            'OK' => [
+                [
+                    [
+                        'name' => 'テスト1',
+                        'code' => 'test1',
+                    ],
+                    [
+                        'name' => 'テスト2',
+                        'code' => 'test2',
+                    ],
+                    [
+                        'name' => 'テスト3',
+                        'code' => 'test3',
+                    ],
+                ],
+                [
+                    1 => 'test1:テスト1',
+                    2 => 'test2:テスト2',
+                    3 => 'test3:テスト3',
+                    '' => '選択してください',
+                ]
             ],
-            '〇' => [
-                ['is_admin' => true],
-                '〇'
-            ]
         ];
     }
 
