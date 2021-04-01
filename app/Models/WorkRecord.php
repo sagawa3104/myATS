@@ -22,7 +22,7 @@ class WorkRecord extends Model
 
     private function rules()
     {
-        $unique = Rule::unique('work_records', 'workday');
+        $unique = Rule::unique('work_records', 'workday')->where('user_id', $this->user_id);
         $unique = isset($this->id) ? $unique->ignore($this->id) : $unique;
         return [
             'workday' => ['required', 'date_format:Y-m-d', $unique],
