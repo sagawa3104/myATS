@@ -2,15 +2,10 @@
 
 namespace App\Utils;
 
+use Carbon\Carbon;
+
 class StrtotimeConverter
 {
-    //1分は60秒
-    private const SECONDSFORMINUTE = 60;
-    //1時間は3600秒
-    private const SECONDSFORHOUR = 3600;
-    //1時間は60分
-    private const MINUTESFORHOUR = 60;
-
     private const HOURMINUTESPATTERN = '/^[0-9]{2}:[0-5][0-9]/';
     private const COLONDLIMITER = '/:/';
     private const COLON = ':';
@@ -24,13 +19,13 @@ class StrtotimeConverter
 
         $data = preg_split(self::COLONDLIMITER, $hour);
 
-        return intval($data[0]) * self::MINUTESFORHOUR + intval($data[1]);
+        return intval($data[0]) * Carbon::MINUTES_PER_HOUR + intval($data[1]);
     }
 
     public static function intMinuteToStrHour(int $minutes)
     {
-        $intHour = intdiv($minutes, self::MINUTESFORHOUR);
-        $modMinutes = $minutes % self::MINUTESFORHOUR;
+        $intHour = intdiv($minutes, Carbon::MINUTES_PER_HOUR);
+        $modMinutes = $minutes % Carbon::MINUTES_PER_HOUR;
 
         return str_pad($intHour, 2, '0', STR_PAD_LEFT) . self::COLON . str_pad($modMinutes, 2, '0', STR_PAD_LEFT);
     }
