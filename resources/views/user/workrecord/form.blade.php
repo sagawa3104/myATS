@@ -72,7 +72,7 @@
                                             @foreach($workrecord->workRecordDetails as $index => $workRecordDetail)
                                                 <tr id={{"workRecordDetails_${index}"}} >
                                                     <td>
-                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, $workRecordDetail->project_id, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
+                                                        {{ Form::select("workRecordDetails[${index}][project_code]", $projects, $workRecordDetail->project_code, ['class' => 'form-control', 'id' => "${index}project_code" ]) }}
                                                     </td>
                                                     <td>
                                                         {{ Form::time("workRecordDetails[${index}][work_time]", $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => "${index}_work_time" ]) }}
@@ -89,8 +89,8 @@
                                             @for ($index=0; $index< count(old('workRecordDetails')) ;$index++)
                                                 <tr id={{"workRecordDetails_${index}"}}>
                                                     <td>
-                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, null, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
-                                                        @error('workRecordDetail.'. $index . '.project_id')
+                                                        {{ Form::select("workRecordDetails[${index}][project_code]", $projects, null, ['class' => 'form-control', 'id' => "${index}project_code" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.project_code')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
@@ -116,7 +116,7 @@
                                         @empty(old('workRecordDetails'))
                                             <tr id={{"workRecordDetails_0"}}>
                                                 <td>
-                                                    {{ Form::select("workRecordDetails[0][project_id]", $projects, null, ['class' => 'form-control', 'id' => "0_project_id" ]) }}
+                                                    {{ Form::select("workRecordDetails[0][project_code]", $projects, null, ['class' => 'form-control', 'id' => "project_code" ]) }}
                                                 </td>
                                                 <td>
                                                     {{ Form::time("workRecordDetails[0][work_time]", null, ['class' => 'form-control', 'id' => "0_work_time" ]) }}
@@ -132,8 +132,8 @@
                                             @for ($index=0; $index< count(old('workRecordDetails')) ;$index++)
                                                 <tr id={{"workRecordDetails_${index}"}}>
                                                     <td>
-                                                        {{ Form::select("workRecordDetails[${index}][project_id]", $projects, null, ['class' => 'form-control', 'id' => "${index}_project_id" ]) }}
-                                                        @error('workRecordDetail.'. $index . '.project_id')
+                                                        {{ Form::select("workRecordDetails[${index}][project_code]", $projects, null, ['class' => 'form-control', 'id' => "${index}_project_code" ]) }}
+                                                        @error('workRecordDetail.'. $index . '.project_code')
                                                         <p class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </td>
@@ -182,7 +182,7 @@
 <script>
     let rows =  $('#detailTable tbody').children().length;
     const WORKRECORDDETAILS ='workRecordDetails';
-    const PROJECT_ID = 'project_id';
+    const PROJECT_CODE = 'project_code';
     const WORK_TIME = 'work_time';
     const CONTENT = 'content';
     $(document).on('click', '#addDetail', function(){
@@ -191,9 +191,9 @@
 
         $('#detailTable tbody tr:last-child td [name^="workRecordDetails"]').each(function (index, elem){
             switch($(elem).attr('id').replace(/\d+_/, '')){
-                case PROJECT_ID:
-                    $(elem).attr('id', rows+'_'+PROJECT_ID);
-                    $(elem).attr('name', WORKRECORDDETAILS+'['+rows+']'+'['+PROJECT_ID+']')
+                case PROJECT_CODE:
+                    $(elem).attr('id', rows+'_'+PROJECT_CODE);
+                    $(elem).attr('name', WORKRECORDDETAILS+'['+rows+']'+'['+PROJECT_CODE+']')
                     console.log($(elem).attr('name'));
                 break;
                 case WORK_TIME:

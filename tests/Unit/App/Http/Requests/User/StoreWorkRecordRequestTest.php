@@ -252,18 +252,6 @@ class StoreWorkRecordRequestTest extends TestCase
                 'After',
                 true,
             ],
-            'プロジェクトID 形式エラー' => [
-                [
-                    'workRecordDetail' => [
-                        0 => [
-                            'project_id' => 'a',
-                        ]
-                    ]
-                ],
-                'workRecordDetail.0.project_id',
-                'Numeric',
-                true,
-            ],
             '作業時間 形式エラー' => [
                 [
                     'workRecordDetail' => [
@@ -319,11 +307,11 @@ class StoreWorkRecordRequestTest extends TestCase
                 [
                     'workRecordDetail' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                         ]
                     ]
                 ],
-                'workRecordDetail.0.project_id',
+                'workRecordDetail.0.project_code',
                 false,
             ],
             '作業時間' => [
@@ -361,7 +349,7 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'content' => 'content1',
                         ],
                     ],
@@ -376,7 +364,7 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '08:00',
                         ],
                     ],
@@ -391,12 +379,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '05:00',
                             'content' => 'content2',
                         ],
@@ -417,12 +405,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '04:00',
                             'content' => 'content2',
                         ],
@@ -442,12 +430,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '04:00',
                             'content' => 'content2',
                         ],
@@ -459,12 +447,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:00',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '04:00',
                             'content' => 'content2',
                         ],
@@ -481,12 +469,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:01',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '04:01',
                             'content' => 'content2',
                         ],
@@ -498,12 +486,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '19:01',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '04:01',
                             'content' => 'content2',
                         ],
@@ -520,12 +508,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '18:44',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '03:59',
                             'content' => 'content2',
                         ],
@@ -537,12 +525,12 @@ class StoreWorkRecordRequestTest extends TestCase
                     'left_at' => '18:44',
                     'workRecordDetails' => [
                         0 => [
-                            'project_id' => 1,
+                            'project_code' => 'test1',
                             'work_time' => '04:00',
                             'content' => 'content1',
                         ],
                         1 => [
-                            'project_id' => 2,
+                            'project_code' => 'test2',
                             'work_time' => '03:59',
                             'content' => 'content2',
                         ],

@@ -38,7 +38,7 @@ class Project extends Model
         $list = array();
         $list += array("" => "選択してください");
         foreach ($projects as $project) {
-            $list += array($project->id => $project->code . ":" . $project->name);
+            $list += array($project->code => $project->code . ":" . $project->name);
         }
         return $list;
     }

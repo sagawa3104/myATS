@@ -58,7 +58,7 @@
                                     @foreach($workrecord->workRecordDetails as $workRecordDetail)
                                         <tr>
                                             <td>
-                                                {{ Form::select('project_id[]', $workRecordDetail->project->selectedItem(), $workRecordDetail->project_id, ['class' => 'form-control', 'id' => 'project_id[]', 'readonly' => 'true' ]) }}
+                                                {{ Form::select('project_code[]', $workRecordDetail->project->selectedItem(), $workRecordDetail->project_code, ['class' => 'form-control', 'id' => 'project_code[]', 'readonly' => 'true' ]) }}
                                             </td>
                                             <td>
                                                 {{ Form::time('work_time[]', $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => 'work_time[]', 'readonly' => 'true' ]) }}

@@ -39,7 +39,7 @@ class StoreWorkRecordRequest extends FormRequest
             //作業合計時間を算定
             $detail_work_time = 0;
             foreach ($workRecordDetails as $index => $workRecordDetail) {
-                if (is_null($workRecordDetail['project_id'])) continue;
+                if (is_null($workRecordDetail['project_code'])) continue;
 
                 if (!isset($workRecordDetail['work_time'])) {
                     $validator->errors()->add('workRecordDetail.' . $index . '.work_time', '作業時間を入力してください');
@@ -84,7 +84,7 @@ class StoreWorkRecordRequest extends FormRequest
             'workday' => ['required', 'date_format:Y-m-d'],
             'attended_at' => ['required', 'date_format:H:i'],
             'left_at' => ['required', 'date_format:H:i', 'after:attended_at'],
-            'workRecordDetail.*.project_id' => ['numeric'],
+            'workRecordDetail.*.project_code' => [],
             'workRecordDetail.*.work_time' => ['date_format:H:i'],
             'workRecordDetail.*.content' => ['max:255'],
         ];

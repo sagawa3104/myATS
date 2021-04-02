@@ -189,9 +189,9 @@ class WorkRecordController extends Controller
         $errorValidator = null;
         $errors = [];
         foreach ($data as $index => $workRecordDetailData) {
-            if (is_null($workRecordDetailData['project_id'])) continue;
+            if (is_null($workRecordDetailData['project_code'])) continue;
             $workRecordDetail = new WorkRecordDetail([
-                'project_id' => $workRecordDetailData['project_id'],
+                'project_id' => Project::where('code', $workRecordDetailData['project_code'])->first()->id,
                 'work_time' => StrtotimeConverter::strHourToIntMinute($workRecordDetailData['work_time']),
                 'content' => $workRecordDetailData['content'],
             ]);

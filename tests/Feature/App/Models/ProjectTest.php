@@ -49,9 +49,9 @@ class ProjectTest extends TestCase
                     ],
                 ],
                 [
-                    1 => 'test1:テスト1',
-                    2 => 'test2:テスト2',
-                    3 => 'test3:テスト3',
+                    'test1' => 'test1:テスト1',
+                    'test2' => 'test2:テスト2',
+                    'test3' => 'test3:テスト3',
                     '' => '選択してください',
                 ]
             ],
