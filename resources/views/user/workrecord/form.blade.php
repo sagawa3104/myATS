@@ -72,7 +72,7 @@
                                             @foreach($workrecord->workRecordDetails as $index => $workRecordDetail)
                                                 <tr id={{"workRecordDetails_${index}"}} >
                                                     <td>
-                                                        {{ Form::select("workRecordDetails[${index}][project_code]", $projects, $workRecordDetail->project_code, ['class' => 'form-control', 'id' => "${index}project_code" ]) }}
+                                                        {{ Form::select("workRecordDetails[${index}][project_code]", $projects, $workRecordDetail->project->code, ['class' => 'form-control', 'id' => "${index}project_code" ]) }}
                                                     </td>
                                                     <td>
                                                         {{ Form::time("workRecordDetails[${index}][work_time]", $workRecordDetail->intWorkTimeToStrHour(), ['class' => 'form-control', 'id' => "${index}_work_time" ]) }}
