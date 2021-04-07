@@ -2,27 +2,21 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model;
 use App\Models\User;
 use App\Models\WorkRecord;
+use App\Utils\Generator\WorkdayGenerator;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Faker\Generator as Faker;
 
 $factory->define(WorkRecord::class, function (Faker $faker) {
 
     $users = User::all()->pluck('id');
 
-    $period = CarbonPeriod::since(Carbon::now()->subQuarter())->day()->untilNow();
+    $start = Carbon::now()->subQuarter();
+    $end = Carbon::now();
 
-    $days = collect();
-    static $SUNDAY = 0;
-    static $SATURDAY = 6;
-    foreach ($period as $day) {
-        if ($day->dayOfWeek <> $SUNDAY && $day->dayOfWeek <> $SATURDAY) {
-            $days->push($day->format('Y-m-d'));
-        }
-    }
+    $days = WorkdayGenerator::periodPerDay($start, $end, true);
+
     $matrix = $users->crossJoin($days);
     $keys = $faker->unique()->randomElement($matrix);
 
