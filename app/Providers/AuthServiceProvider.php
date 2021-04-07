@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Project;
 use App\Models\User;
+use App\Models\WorkRecord;
 use App\Policies\ProjectPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\WorkRecordPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Model' => 'App\Policies\ModelPolicy',
         Project::class => ProjectPolicy::class,
         User::class => UserPolicy::class,
+        WorkRecord::class => WorkRecordPolicy::class,
     ];
 
     /**
