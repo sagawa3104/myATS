@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
+use App\Utils\Consts\ExecResult;
 use App\Utils\StrtotimeConverter;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,6 +18,12 @@ use Illuminate\Validation\ValidationException;
 
 class WorkRecordController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(WorkRecord::class, 'workrecord');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -76,20 +83,24 @@ class WorkRecordController extends Controller
         $workRecordDetails = $this->setWorkRecordDetails($data['workRecordDetails']);
 
         $workRecord->validate();
+        $status = ExecResult::FAILURE;
 
         DB::beginTransaction();
         try {
             $workRecord->save();
-
+            $status = ExecResult::SUCCESS;
+            $message = '登録が完了しました';
             $workRecord->workRecordDetails()->saveMany($workRecordDetails);
         } catch (Exception $e) {
             DB::rollBack();
+            $status = ExecResult::FAILURE;
+            $message = $e->getMessage();
             return back()->withInput();
         }
 
         DB::commit();
 
-        return redirect(route('user.workrecord.index', [$user->id]));
+        return redirect(route('user.workrecord.index', [$user->id]))->with($status, $message);;
     }
 
     /**
@@ -151,18 +162,23 @@ class WorkRecordController extends Controller
         $workrecord->validate();
 
         DB::beginTransaction();
+        $status = ExecResult::FAILURE;
         try {
             $oldWorkRecordDetails->delete();
             $workrecord->save();
+            $status = ExecResult::SUCCESS;
+            $message = '登録が完了しました';
 
             $workrecord->workRecordDetails()->saveMany($workRecordDetails);
         } catch (Exception $e) {
             DB::rollBack();
+            $status = ExecResult::FAILURE;
+            $message = $e->getMessage();
             return back()->withInput();
         }
         DB::commit();
 
-        return redirect(route('user.workrecord.index', [$user->id]));
+        return redirect(route('user.workrecord.index', [$user->id]))->with($status, $message);;
     }
 
     /**
@@ -190,8 +206,9 @@ class WorkRecordController extends Controller
         $errors = [];
         foreach ($data as $index => $workRecordDetailData) {
             if (is_null($workRecordDetailData['project_code'])) continue;
+            $project = Project::where('code', $workRecordDetailData['project_code'])->first();
             $workRecordDetail = new WorkRecordDetail([
-                'project_id' => Project::where('code', $workRecordDetailData['project_code'])->first()->id,
+                'project_id' => $project->id,
                 'work_time' => StrtotimeConverter::strHourToIntMinute($workRecordDetailData['work_time']),
                 'content' => $workRecordDetailData['content'],
             ]);
