@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\WorkRecord;
 use App\Utils\StrtotimeConverter;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,6 +63,28 @@ class HomeController extends Controller
             'wt' => StrtotimeConverter::intMinuteToStrHour($wt),
             'ot' => StrtotimeConverter::intMinuteToStrHour($ot),
             'wt_per_project' => $wt_per_project,
+        ]);
+    }
+
+    public function calender(Request $request)
+    {
+        $baseday = Carbon::now();
+        // $st = $day->firstOfMonth()->subDays($day->dayOfWeek)->copy();
+        // $ed = $day->lastOfMonth()->addDays(Carbon::SATURDAY - $day->dayOfWeek)->copy();
+        $st = $baseday->copy();
+        $st->firstOfMonth()->subDays($st->dayOfWeek);
+        $ed = $baseday->copy();
+        $ed->lastOfMonth()->addDays(Carbon::SATURDAY - $ed->dayOfWeek);
+
+        $period = Carbon::instance($st)->daysUntil($ed);
+        $calender = collect();
+        foreach ($period as $day) {
+            $calender->push($day);
+        }
+
+        return view('calender', [
+            'baseday' => $baseday,
+            'calender' => $calender,
         ]);
     }
 }

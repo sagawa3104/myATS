@@ -12,38 +12,51 @@
             @include('layouts.alert')
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title mb-0 mt-2">一覧</h3>
-                    <div class="text-right">
-                        {{ Form::open([
-                            'url' => route('user.workrecord.create', $user->id),
-                            'method' => 'get',
-                        ])}}
-                            {{ Form::date('workday', null, ['class' => 'mx-2 mt-1']) }}
-                            {{ Form::submit('登録', ['class' => 'btn btn-primary mb-3']) }}
-                        {{ Form::close() }}
+                    <p class="card-title mt-3">{{$baseday->format('Y年m月')}}</p>
+                    <div class="float-right btn-group">
+                        <a href="{{route('user.workrecord.index', ['user' => $user->id, 'target' => $baseday->copy()->subMonth()->format('Y-m')])}}" class="btn btn-primary mr-2">前月</a>
+                        <a href="{{route('user.workrecord.index', ['user' => $user->id])}}" class="btn btn-primary mr-2">今日</a>
+                        <a href="{{route('user.workrecord.index', ['user' => $user->id, 'target' => $baseday->copy()->addMonth()->format('Y-m')])}}" class="btn btn-primary">次月</a>
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover">
-                        <tr>
-                            <th class="text-nowrap">勤務日</th>
-                            <th class="text-nowrap">勤務時間</th>
-                            <th class="text-nowrap">休憩時間</th>
-                            <th class="text-nowrap">時間外労働時間</th>
-                            <th></th>
-                        </tr>
-                    @foreach ($workrecords as $workrecord)
-                        <tr>
-                            <td>{{ $workrecord->workday}}</td>
-                            <td>{{ $workrecord->intWorkingTimeToStrHour() }}</td>
-                            <td>{{ $workrecord->intBreakTimeToStrHour() }}</td>
-                            <td>{{ $workrecord->intOverTimeToStrHour() }}</td>
-                            <td>
-                                {{ Html::link(route('user.workrecord.edit', [$user->id, $workrecord->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
-                                {{ Html::link(route('user.workrecord.show', [$user->id, $workrecord->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
-                            </td>
-                        </tr>
-                    @endforeach
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <col width="10%">
+                        <col span="5">
+                        <col width="10%">
+                        <thead>
+                            <tr>
+                                @foreach (['日', '月', '火', '水', '木', '金', '土'] as $dow)
+                                    <th>{{$dow}}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($calender as $date)
+                                @if ($date['date']->isSunday())
+                                    <tr height="120px">
+                                @endif
+                                    @if ($date['date']->month <> $baseday->month )
+                                    <td class="bg-light">
+                                    @else
+                                    <td>
+                                    @endif
+                                        @if (isset($date['workRecord']))
+                                            <a href="{{route('user.workrecord.edit', [$user->id, $date['workRecord']->id])}}" class="d-flex">
+                                                {{$date['date']->format('d')}}
+                                            </a>
+                                            <div class="d-flex">
+                                                <span>{{$date['workRecord']->attended_at. ' ~ '.$date['workRecord']->left_at}}</span>
+                                            </div>
+                                        @else
+                                            {{ Html::link(route('user.workrecord.create', ['user' => $user->id, 'workday' => $date['date']->format('Y-m-d')]), $date['date']->format('d'), ['class' => 'd-flex']) }}
+                                        @endif
+                                    </td>
+                                @if($date['date']->isSaturday())
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>

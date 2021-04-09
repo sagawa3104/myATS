@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     //ログイン後ホーム
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/calender', 'HomeController@calender')->name('calender');
 
     //管理機能
     Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function () {

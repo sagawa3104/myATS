@@ -11,6 +11,7 @@ use App\Models\WorkRecord;
 use App\Models\WorkRecordDetail;
 use App\Utils\Consts\ExecResult;
 use App\Utils\StrtotimeConverter;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,14 +30,42 @@ class WorkRecordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index(Request $request, User $user)
     {
         //
+        $data = $request->all();
+        $baseday = isset($data['target']) ? Carbon::parse($data['target']) : Carbon::now();
+        $st = $baseday->copy();
+        $st->firstOfMonth()->subDays($st->dayOfWeek);
+        $ed = $baseday->copy();
+        $ed->lastOfMonth()->addDays(Carbon::SATURDAY - $ed->dayOfWeek);
+
+        $period = Carbon::instance($st)->daysUntil($ed);
+        $calender = collect();
+        foreach ($period as $day) {
+            $calender->push($day);
+        }
+
+
+
         $workrecords = WorkRecord::where('user_id', $user->id)->orderBy('workday', 'desc')->paginate(20);
+        $test = WorkRecord::where('user_id', $user->id)->whereBetween('workday', [$st->toDateString(), $ed->toDateString()])->orderBy('workday', 'desc')->get();
+
+        $calender = $calender->map(function ($date) use ($test) {
+            $res = $test->search(
+                function ($wr) use ($date) {
+                    return  $wr->workday == $date->toDateString();
+                }
+            );
+
+            return ['date' => $date, 'workRecord' => $res !== false ? $test->get($res) : null];
+        });
 
         return view('user.workrecord.index', [
             'user' => $user,
             'workrecords' => $workrecords,
+            'baseday' => $baseday,
+            'calender' => $calender,
         ]);
     }
 
