@@ -32,6 +32,11 @@ class Project extends Model
         return $this->hasMany('App\Models\WorkRecordDetail');
     }
 
+    public function members()
+    {
+        return $this->belongsToMany('App\Models\User', 'assignments')->as('members')->withTimestamps();
+    }
+
     public static function selectList()
     {
         $projects = Project::orderBy('id', 'desc')->get();

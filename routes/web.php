@@ -29,6 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function () {
         Route::resource('/user', 'UserController');
         Route::resource('/project', 'ProjectController');
+        Route::prefix('project/{project}')->name('project.')->group(function () {
+            Route::get('/assignment', 'ProjectAssignmentController@index')->name('assignment.index');
+            Route::post('/assignment', 'ProjectAssignmentController@assign')->name('assignment.assign');
+        });
     });
 
     //一般機能
