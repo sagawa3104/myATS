@@ -51,7 +51,7 @@
                         <div class="card-header">
                             <h4 class="card-title mb-0">明細</h4>
                         </div>
-                        <div class="form-body">
+                        <div class="card-body">
                             <table class="table table-hover" id='detailTable'>
                                 <thead>
                                     <tr>
