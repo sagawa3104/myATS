@@ -31,6 +31,7 @@
                             <td>
                                 {{ Html::link(route('admin.project.edit', [$project->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
                                 {{ Html::link(route('admin.project.show', [$project->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('admin.project.assignment.index', [$project->id]), '要員割当', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach
