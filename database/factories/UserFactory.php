@@ -19,10 +19,20 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $up = [
+        400000,
+        600000,
+        800000,
+        1000000,
+        1200000,
+        1400000,
+        1600000,
+    ];
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'is_admin' => false,
+        'monthly_unit_price' => $faker->randomElement($up),
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),

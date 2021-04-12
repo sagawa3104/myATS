@@ -124,7 +124,7 @@ class WorkRecordControllerTest extends TestCase
         //Arrange
         $user = User::where('is_admin', false)->get()->random();
         $this->actingAs($user);
-        $projectlist = Project::selectList();
+        $projectlist = $user->assignedProjectList();
         $workrecord = new WorkRecord([
             'attended_at' => '10:00',
             'left_at' => '19:00',
@@ -153,7 +153,7 @@ class WorkRecordControllerTest extends TestCase
         //Arrange
         $user = User::where('is_admin', false)->get()->random();
         $this->actingAs($user);
-        $projectlist = Project::selectList();
+        $projectlist = $user->assignedProjectList();
         $workday = '2021-04-01';
         $workrecord = new WorkRecord([
             'workday' => $workday,

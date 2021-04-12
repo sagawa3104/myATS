@@ -27,7 +27,7 @@ class UpdateUserRequest extends FormRequest
             'name' => ['required', 'max:255'],
             'email' => ['required', 'max:255', 'email'],
             'password' => ['nullable', 'min:8'],
-            'monthly_unit_price' => ['required', 'integer'],
+            'monthly_unit_price' => ['required', 'integer', 'min:0'],
             'is_admin' => ['nullable', 'boolean'],
         ];
     }
