@@ -156,6 +156,44 @@ class StoreUserRequestTest extends TestCase
                 'Min',
                 true,
             ],
+            '月単価 必須エラー1' => [
+                [],
+                'monthly_unit_price',
+                'Required',
+                true,
+            ],
+            '月単価 必須エラー2' => [
+                [
+                    'monthly_unit_price' => '',
+                ],
+                'monthly_unit_price',
+                'Required',
+                true,
+            ],
+            '月単価 必須エラー3' => [
+                [
+                    'monthly_unit_price' => null,
+                ],
+                'monthly_unit_price',
+                'Required',
+                true,
+            ],
+            '月単価 形式エラー' => [
+                [
+                    'monthly_unit_price' => 10.1,
+                ],
+                'monthly_unit_price',
+                'Integer',
+                true,
+            ],
+            '月単価 最小値エラー' => [
+                [
+                    'monthly_unit_price' => -1,
+                ],
+                'monthly_unit_price',
+                'Min',
+                true,
+            ],
             '管理者権限 非Bool値' => [
                 [
                     'is_admin' => 999,
@@ -189,6 +227,13 @@ class StoreUserRequestTest extends TestCase
                     'password' => str_repeat('a', 8),
                 ],
                 'password',
+                false,
+            ],
+            '月単価' => [
+                [
+                    'monthly_unit_price' => 8000000,
+                ],
+                'monthly_unit_price',
                 false,
             ],
             '管理者権限 NULL許可' => [

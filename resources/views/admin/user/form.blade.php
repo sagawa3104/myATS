@@ -19,8 +19,8 @@
                   @endif
                   </h3>
                 </div>
-                <div class="card-body">
                 {{ Form::model($user, $formOptions) }}
+                <div class="card-body">
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
                         {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name' ]) }}
@@ -39,6 +39,13 @@
                         <label for="password">パスワード</label>
                         {{ Form::password('password', ['class' => 'form-control', 'id' => 'password']) }}
                         @error('password')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly_unit_price">月単価</label>
+                        {{ Form::text('monthly_unit_price', null, ['class' => 'form-control', 'id' => 'monthly_unit_price' ]) }}
+                        @error('monthly_unit_price')
                             <p class="text-danger">{{ $message }}</p>
                         @enderror
                     </div>
