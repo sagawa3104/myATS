@@ -32,6 +32,7 @@
                             <td>
                                 {{ Html::link(route('admin.user.edit', [$user->id]), '編集', ['class' => 'btn btn-sm btn-primary']) }}
                                 {{ Html::link(route('admin.user.show', [$user->id]), '確認', ['class' => 'btn btn-sm btn-primary']) }}
+                                {{ Html::link(route('admin.user.assignment.index', [$user->id]), '案件割当', ['class' => 'btn btn-sm btn-primary']) }}
                             </td>
                         </tr>
                     @endforeach

@@ -62,7 +62,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function assignments()
+    public function projects()
     {
         return $this->belongsToMany('App\Models\Project', 'assignments')->as('assignments')->withTimestamps();
     }
@@ -76,6 +76,7 @@ class User extends Authenticatable
     {
         return self::IS_ADMIN[$this->is_admin];
     }
+
     public static function selectList()
     {
         $users = User::orderBy('id', 'desc')->get();
@@ -83,6 +84,17 @@ class User extends Authenticatable
         $list += array("" => "選択してください");
         foreach ($users as $user) {
             $list += array($user->id => $user->name);
+        }
+        return $list;
+    }
+
+    public function assinedProjectList()
+    {
+        $projects = $this->projects;
+        $list = array();
+        $list += array("" => "選択してください");
+        foreach ($projects as $project) {
+            $list += array($project->code => $project->code . ":" . $project->name);
         }
         return $list;
     }

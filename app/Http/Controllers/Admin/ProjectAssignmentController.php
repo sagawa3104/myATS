@@ -15,7 +15,7 @@ class ProjectAssignmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Project $project)
+    public function projectIndex(Request $request, Project $project)
     {
         //
         $project = Project::find($project->id);
@@ -39,7 +39,7 @@ class ProjectAssignmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function assign(Request $request, Project $project)
+    public function assignUser(Request $request, Project $project)
     {
         //
         $data = $request->all();
@@ -48,5 +48,47 @@ class ProjectAssignmentController extends Controller
         $project->members()->sync($col);
 
         return redirect(route('admin.project.index'));
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function userIndex(Request $request, User $user)
+    {
+        //
+        $user = User::find($user->id);
+
+        $projects = $user->projects;
+
+        $projectlist = Project::selectList();
+        return view('admin.user.assignment.form', [
+            'project' => $user,
+            'projects' => $projects,
+            'projectlist' => $projectlist,
+            'formOptions' => [
+                'route' => ['admin.user.assignment.assign', [$user->id,]],
+                'method' => 'post',
+            ],
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assignProject(Request $request, User $user)
+    {
+        //
+        $data = $request->all();
+        $col = collect($data['assignments'])->flatten()->toArray();
+        $projects = Project::whereIn('code', $col)->get()->pluck('id');
+
+        $user->projects()->sync($projects);
+
+        return redirect(route('admin.user.index'));
     }
 }

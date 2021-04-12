@@ -46,8 +46,6 @@ class WorkRecordController extends Controller
             $calender->push($day);
         }
 
-
-
         $workrecords = WorkRecord::where('user_id', $user->id)->orderBy('workday', 'desc')->paginate(20);
         $test = WorkRecord::where('user_id', $user->id)->whereBetween('workday', [$st->toDateString(), $ed->toDateString()])->orderBy('workday', 'desc')->get();
 
@@ -83,7 +81,9 @@ class WorkRecordController extends Controller
             'attended_at' => '10:00',
             'left_at' => '19:00',
         ]);
-        $porjects = Project::selectList();
+
+        $porjects = $user->assinedProjectList();
+
         return view('user.workrecord.form', [
             'user' => $user,
             'workrecord' => $workrecord,

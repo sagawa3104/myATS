@@ -28,10 +28,14 @@ Route::middleware('auth')->group(function () {
     //管理機能
     Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function () {
         Route::resource('/user', 'UserController');
+        Route::prefix('user/{user}')->name('user.')->group(function () {
+            Route::get('/assignment', 'ProjectAssignmentController@userIndex')->name('assignment.index');
+            Route::post('/assignment', 'ProjectAssignmentController@assignProject')->name('assignment.assign');
+        });
         Route::resource('/project', 'ProjectController');
         Route::prefix('project/{project}')->name('project.')->group(function () {
-            Route::get('/assignment', 'ProjectAssignmentController@index')->name('assignment.index');
-            Route::post('/assignment', 'ProjectAssignmentController@assign')->name('assignment.assign');
+            Route::get('/assignment', 'ProjectAssignmentController@projectIndex')->name('assignment.index');
+            Route::post('/assignment', 'ProjectAssignmentController@assignUser')->name('assignment.assign');
         });
     });
 
