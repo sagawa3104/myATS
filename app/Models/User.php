@@ -29,6 +29,7 @@ class User extends Authenticatable
                 'name' => ['required', 'max:255'],
                 'email' => ['required', 'max:255', 'email', $unique],
                 'password' => ['required'],
+                'monthly_unit_price' => ['required', 'integer'],
                 'is_admin' => ['required', 'boolean'],
             ];
     }
@@ -41,6 +42,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'monthly_unit_price',
         'is_admin',
     ];
 

@@ -27,6 +27,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'max:255'],
             'email' => ['required', 'max:255', 'email'],
             'password' => ['required', 'min:8'],
+            'monthly_unit_price' => ['required', 'integer'],
             'is_admin' => ['nullable', 'boolean'],
         ];
     }

@@ -15,8 +15,8 @@
                       確認
                   </h3>
                 </div>
-                <div class="card-body">
                 {{ Form::model($user) }}
+                <div class="card-body">
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
                         {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name', 'readonly' => 'true']) }}
@@ -28,6 +28,10 @@
                     <div class="form-group">
                         <label for="password">パスワード</label>
                         {{ Form::password('password', ['class' => 'form-control', 'id' => 'password', 'readonly' => 'true']) }}
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly_unit_price">月単価</label>
+                        {{ Form::text('monthly_unit_price', null, ['class' => 'form-control', 'id' => 'monthly_unit_price', 'readonly' => 'true']) }}
                     </div>
                     <label for="is_admin">管理者権限</label>
                     <div class="form-check mb-3 pb-3">

@@ -64,6 +64,7 @@ class UserController extends Controller
         $user = new User([
             'name' => $data['name'],
             'email' => $data['email'],
+            'monthly_unit_price' => $data['monthly_unit_price'],
             'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
         ]);
         $user->password = Hash::make($data['password']);
@@ -125,6 +126,7 @@ class UserController extends Controller
         $user->fill([
             'name' => $data['name'],
             'email' => $data['email'],
+            'monthly_unit_price' => $data['monthly_unit_price'],
             'is_admin' => isset($data['is_admin']) ? $data['is_admin'] : false,
             'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
         ]);
