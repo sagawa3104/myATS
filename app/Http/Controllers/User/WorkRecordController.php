@@ -82,7 +82,7 @@ class WorkRecordController extends Controller
             'left_at' => '19:00',
         ]);
 
-        $porjects = $user->assinedProjectList();
+        $porjects = $user->assignedProjectList();
 
         return view('user.workrecord.form', [
             'user' => $user,

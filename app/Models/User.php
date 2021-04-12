@@ -90,7 +90,7 @@ class User extends Authenticatable
         return $list;
     }
 
-    public function assinedProjectList()
+    public function assignedProjectList()
     {
         $projects = $this->projects;
         $list = array();
